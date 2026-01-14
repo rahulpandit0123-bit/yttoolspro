@@ -5,9 +5,16 @@ import { SITE } from "@/lib/site";
 export const metadata: Metadata = {
   title: `${SITE.name} — YouTube Creator Tools`,
   description: SITE.tagline.en,
+  verification: {
+    google: "jbCvKyPSFRZNqKaVz__-06gXnGHGaF-e5nHN-F21HHI",
+  },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
       <body className="min-h-dvh bg-slate-950 text-slate-100 antialiased">
