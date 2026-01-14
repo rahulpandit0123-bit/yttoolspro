@@ -1,42 +1,97 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 
-export default function ToolsIndex() {
+export const metadata: Metadata = {
+  title: "YouTube Tools (Free) – Thumbnail, Embed, Timestamp | YTToolsPro",
+  description:
+    "Explore free YouTube creator tools: YouTube Thumbnail Downloader, Embed Code Generator, and Timestamp Link Generator. Fast, simple, and no login required.",
+};
+
+const tools = [
+  {
+    title: "YouTube Thumbnail Downloader",
+    desc: "Get all thumbnail sizes (Default, HQ, HD/4K) instantly from any YouTube link.",
+    href: "/tools/youtube-thumbnail",
+    badge: "Most searched",
+  },
+  {
+    title: "YouTube Embed Code Generator",
+    desc: "Generate privacy-friendly, responsive YouTube embed code with optional start time.",
+    href: "/tools/youtube-embed",
+    badge: "Bloggers",
+  },
+  {
+    title: "YouTube Timestamp Link Generator",
+    desc: "Create shareable timestamp links (mm:ss) for YouTube videos in seconds.",
+    href: "/tools/youtube-timestamp",
+    badge: "Creators",
+  },
+];
+
+export default function ToolsPage() {
   return (
     <main className="mx-auto max-w-6xl px-4 py-10">
       <Link href="/" className="text-sm text-slate-400 hover:text-slate-200">
         ← Home
       </Link>
 
-      <h1 className="mt-4 text-3xl font-bold">All Tools</h1>
-      <p className="mt-2 max-w-2xl text-slate-300">
-        Free, fast, and creator-friendly tools for YouTube. (No downloads, policy-safe)
+      <h1 className="mt-4 text-3xl font-bold">Free YouTube Tools for Creators</h1>
+      <p className="mt-2 max-w-3xl text-slate-300">
+        Use these free tools to speed up your YouTube workflow. Copy thumbnail URLs,
+        generate responsive embed codes, and create timestamp links for sharing.
+        No sign-up required.
       </p>
 
-      <div className="mt-8 grid gap-4 md:grid-cols-3">
-        <Link
-          href="/tools/youtube-thumbnail"
-          className="rounded-3xl border border-slate-800 bg-slate-900/30 p-5 hover:border-slate-600"
-        >
-          <div className="font-semibold">YouTube Thumbnail Viewer</div>
-          <div className="mt-1 text-sm text-slate-400">All sizes + Copy URLs</div>
-        </Link>
+      <div className="mt-8 grid gap-6 md:grid-cols-2">
+        {tools.map((t) => (
+          <Link
+            key={t.href}
+            href={t.href}
+            className="block rounded-3xl border border-slate-800 bg-slate-900/30 p-5 hover:border-slate-600 transition"
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <div className="text-xl font-semibold">{t.title}</div>
+                <div className="mt-2 text-sm text-slate-300">{t.desc}</div>
+              </div>
+              <span className="shrink-0 rounded-full border border-slate-700 bg-slate-950/40 px-3 py-1 text-xs text-slate-200">
+                {t.badge}
+              </span>
+            </div>
 
-        <Link
-          href="/tools/youtube-embed"
-          className="rounded-3xl border border-slate-800 bg-slate-900/30 p-5 hover:border-slate-600"
-        >
-          <div className="font-semibold">YouTube Embed Code Generator</div>
-          <div className="mt-1 text-sm text-slate-400">Privacy embed + Start time</div>
-        </Link>
-
-        <Link
-          href="/tools/youtube-timestamp"
-          className="rounded-3xl border border-slate-800 bg-slate-900/30 p-5 hover:border-slate-600"
-        >
-          <div className="font-semibold">YouTube Timestamp Link Generator</div>
-          <div className="mt-1 text-sm text-slate-400">mm:ss → Share link</div>
-        </Link>
+            <div className="mt-4 text-sm font-semibold text-white">
+              Open tool →
+            </div>
+          </Link>
+        ))}
       </div>
+
+      {/* SEO text block (helps ranking without “blog”) */}
+      <section className="mt-12 rounded-3xl border border-slate-800 bg-slate-900/20 p-6">
+        <h2 className="text-xl font-semibold">What you can do with YTToolsPro</h2>
+        <p className="mt-3 text-slate-300">
+          YTToolsPro is a collection of simple, fast YouTube utilities made for creators,
+          editors, and bloggers. You can grab YouTube thumbnail images in multiple sizes,
+          generate privacy-friendly embed codes using youtube-nocookie, and create timestamp
+          links for sharing specific moments in a video. These tools work with normal YouTube
+          links, Shorts links, and youtu.be links.
+        </p>
+
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          <div className="rounded-2xl border border-slate-800 bg-slate-950/30 p-4">
+            <div className="font-semibold">Supports all common YouTube URLs</div>
+            <div className="mt-1 text-sm text-slate-300">
+              Works with watch, Shorts, and youtu.be short links.
+            </div>
+          </div>
+          <div className="rounded-2xl border border-slate-800 bg-slate-950/30 p-4">
+            <div className="font-semibold">Fast & free</div>
+            <div className="mt-1 text-sm text-slate-300">
+              No login, no tracking popups, clean UI.
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
   );
 }
