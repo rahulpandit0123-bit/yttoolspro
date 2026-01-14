@@ -3,9 +3,9 @@ import Link from "next/link";
 import YouTubeEmbedClient from "./YouTubeEmbedClient";
 
 export const metadata: Metadata = {
-  title: "YouTube Embed Code Generator (Responsive) – YTToolsPro",
+  title: "YouTube Embed Code Generator (Responsive, No-Cookie) – YTToolsPro",
   description:
-    "Generate responsive YouTube embed code instantly. Free YouTube embed code generator for bloggers and creators. Works on all devices.",
+    "Generate responsive and privacy-friendly YouTube embed code (youtube-nocookie) with optional start time. Free tool for creators & bloggers.",
 };
 
 export default function YouTubeEmbedPage() {

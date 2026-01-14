@@ -3,9 +3,9 @@ import Link from "next/link";
 import YouTubeTitleClient from "./YouTubeTitleClient";
 
 export const metadata: Metadata = {
-  title: "YouTube Title Generator (Hindi + English) – YTToolsPro",
+  title: "YouTube Title Generator (Viral + SEO) – YTToolsPro",
   description:
-    "Generate catchy YouTube titles for videos and Shorts. Choose style (viral/SEO/emotional) and get titles instantly. Free YouTube title generator in Hindi + English.",
+    "Generate catchy YouTube titles in Hindi + English with Viral/SEO styles. Free YouTube title generator for creators and Shorts.",
 };
 
 export default function YouTubeTitlePage() {
@@ -22,6 +22,43 @@ export default function YouTubeTitlePage() {
       </p>
 
       <YouTubeTitleClient />
+
+      {/* ✅ FAQ Schema for SEO (Google Rich Results) */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: [
+              {
+                "@type": "Question",
+                name: "Is this YouTube Title Generator free?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "Yes, this YouTube Title Generator is completely free to use.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "Can I use these titles for YouTube Shorts?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "Yes. The generated titles work for both YouTube Shorts and normal videos.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "Which languages are supported?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "You can generate titles in Hindi and English.",
+                },
+              },
+            ],
+          }),
+        }}
+      />
     </main>
   );
 }
