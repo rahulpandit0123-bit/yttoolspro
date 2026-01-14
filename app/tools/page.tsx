@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "YouTube Tools (Free) – Thumbnail, Embed, Timestamp | YTToolsPro",
   description:
-    "Explore free YouTube creator tools: YouTube Thumbnail Downloader, Embed Code Generator, and Timestamp Link Generator. Fast, simple, and no login required.",
+    "Explore free YouTube creator tools: YouTube Thumbnail Downloader, Embed Code Generator, Timestamp Link Generator, and Hashtag Generator. Fast, simple, and no login required.",
 };
 
 const tools = [
@@ -26,6 +26,12 @@ const tools = [
     href: "/tools/youtube-timestamp",
     badge: "Creators",
   },
+  {
+    title: "YouTube Hashtag Generator",
+    desc: "Generate optimized hashtags for Shorts and videos (Hindi + English). One-click copy.",
+    href: "/tools/youtube-hashtag",
+    badge: "High traffic",
+  },
 ];
 
 export default function ToolsPage() {
@@ -38,7 +44,7 @@ export default function ToolsPage() {
       <h1 className="mt-4 text-3xl font-bold">Free YouTube Tools for Creators</h1>
       <p className="mt-2 max-w-3xl text-slate-300">
         Use these free tools to speed up your YouTube workflow. Copy thumbnail URLs,
-        generate responsive embed codes, and create timestamp links for sharing.
+        generate responsive embed codes, create timestamp links, and generate hashtags.
         No sign-up required.
       </p>
 
@@ -66,31 +72,15 @@ export default function ToolsPage() {
         ))}
       </div>
 
-      {/* SEO text block (helps ranking without “blog”) */}
+      {/* SEO text block */}
       <section className="mt-12 rounded-3xl border border-slate-800 bg-slate-900/20 p-6">
         <h2 className="text-xl font-semibold">What you can do with YTToolsPro</h2>
         <p className="mt-3 text-slate-300">
           YTToolsPro is a collection of simple, fast YouTube utilities made for creators,
           editors, and bloggers. You can grab YouTube thumbnail images in multiple sizes,
-          generate privacy-friendly embed codes using youtube-nocookie, and create timestamp
-          links for sharing specific moments in a video. These tools work with normal YouTube
-          links, Shorts links, and youtu.be links.
+          generate privacy-friendly embed codes, create timestamp links, and generate
+          optimized hashtags for YouTube Shorts and videos.
         </p>
-
-        <div className="mt-4 grid gap-3 sm:grid-cols-2">
-          <div className="rounded-2xl border border-slate-800 bg-slate-950/30 p-4">
-            <div className="font-semibold">Supports all common YouTube URLs</div>
-            <div className="mt-1 text-sm text-slate-300">
-              Works with watch, Shorts, and youtu.be short links.
-            </div>
-          </div>
-          <div className="rounded-2xl border border-slate-800 bg-slate-950/30 p-4">
-            <div className="font-semibold">Fast & free</div>
-            <div className="mt-1 text-sm text-slate-300">
-              No login, no tracking popups, clean UI.
-            </div>
-          </div>
-        </div>
       </section>
     </main>
   );
