@@ -43,12 +43,12 @@ function makeTitles(topic: string, lang: Lang, style: Style) {
       `${t} Changed My Life (Real Story)`,
       `If You’re Struggling With ${t}, Watch This`,
       `The Most Honest Video About ${t}`,
-      `This ${t} Moment Made Me Cry…`,
       `Don’t Give Up on ${t} — Do This`,
       `My Biggest Lesson From ${t}`,
       `I Failed at ${t}… Then This Worked`,
       `The Hard Truth About ${t}`,
       `You’re Not Alone: ${t} Journey`,
+      `This ${t} Advice Is Gold`,
     ],
     question: [
       `Can You Really Do ${t}?`,
@@ -106,12 +106,12 @@ function makeTitles(topic: string, lang: Lang, style: Style) {
       `${t} ने मेरी सोच बदल दी (Real)`,
       `अगर ${t} में फंस रहे हो तो ये देखो`,
       `${t} पर सबसे honest वीडियो`,
-      `${t} का ये moment दिल छू गया…`,
       `${t} छोड़ो मत — ये करो`,
       `${t} से मिली सबसे बड़ी सीख`,
       `मैं ${t} में fail हुआ… फिर ये काम आया`,
       `${t} की hard truth`,
       `तुम अकेले नहीं हो: ${t} journey`,
+      `${t} की ये बात दिल छू जाएगी`,
     ],
     question: [
       `क्या तुम सच में ${t} कर सकते हो?`,
@@ -140,7 +140,6 @@ function makeTitles(topic: string, lang: Lang, style: Style) {
   } as const;
 
   const list = lang === "hi" ? hi[style] : en[style];
-  // de-dupe + keep 10
   return Array.from(new Set(list)).slice(0, 10);
 }
 
@@ -168,9 +167,7 @@ export default function YouTubeTitleClient() {
             placeholder='Example: "Galwan song", "हनुमान चालीसा", "Fitness tips"'
             className="mt-2 w-full rounded-2xl border border-slate-800 bg-slate-950/40 px-4 py-3 text-slate-100 placeholder:text-slate-500 outline-none focus:border-slate-600"
           />
-          <div className="mt-2 text-xs text-slate-400">
-            Tip: short topic works best (2–5 words).
-          </div>
+          <div className="mt-2 text-xs text-slate-400">Tip: 2–5 words best.</div>
         </div>
 
         <div>
@@ -203,9 +200,7 @@ export default function YouTubeTitleClient() {
 
       <div className="mt-6 rounded-2xl border border-slate-800 bg-slate-950/30 p-4">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="text-sm text-slate-400">
-            Generated titles (click any to copy)
-          </div>
+          <div className="text-sm text-slate-400">Generated titles (click any to copy)</div>
           <button
             onClick={() => copy(titles.join("\n"))}
             className="rounded-xl bg-white px-4 py-2 text-sm font-semibold text-slate-950"
@@ -216,9 +211,7 @@ export default function YouTubeTitleClient() {
         </div>
 
         {titles.length === 0 ? (
-          <div className="mt-4 text-sm text-slate-400">
-            Enter a topic to generate titles.
-          </div>
+          <div className="mt-4 text-sm text-slate-400">Enter a topic to generate titles.</div>
         ) : (
           <div className="mt-4 grid gap-2 sm:grid-cols-2">
             {titles.map((t) => (

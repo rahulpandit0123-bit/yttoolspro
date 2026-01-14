@@ -22,40 +22,6 @@ export default function YouTubeTitlePage() {
       </p>
 
       <YouTubeTitleClient />
-
-      {/* ✅ FAQ Schema for SEO */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "FAQPage",
-            mainEntity: [
-              {
-                "@type": "Question",
-                name: "Is this YouTube Title Generator free?",
-                acceptedAnswer: { "@type": "Answer", text: "Yes, it is completely free to use." },
-              },
-              {
-                "@type": "Question",
-                name: "Do these titles work for YouTube Shorts?",
-                acceptedAnswer: {
-                  "@type": "Answer",
-                  text: "Yes. You can use these titles for Shorts and normal videos.",
-                },
-              },
-              {
-                "@type": "Question",
-                name: "Which language is supported?",
-                acceptedAnswer: {
-                  "@type": "Answer",
-                  text: "You can generate titles in Hindi and English.",
-                },
-              },
-            ],
-          }),
-        }}
-      />
     </main>
   );
 }
