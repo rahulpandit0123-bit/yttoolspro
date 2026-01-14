@@ -1,3 +1,12 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "YouTube Tools — YTToolsPro",
+  description:
+    "Free YouTube tools for creators: Thumbnail Downloader, Embed Code Generator, Timestamp Link Generator, Hashtag Generator, Title Generator.",
+};
+
 const tools = [
   {
     title: "YouTube Thumbnail Downloader",
@@ -30,3 +39,42 @@ const tools = [
     badge: "High traffic",
   },
 ];
+
+export default function ToolsPage() {
+  return (
+    <main className="mx-auto max-w-6xl px-4 py-10">
+      <Link href="/" className="text-sm text-slate-400 hover:text-slate-200">
+        ← Home
+      </Link>
+
+      <h1 className="mt-4 text-3xl font-bold">All YouTube Tools</h1>
+      <p className="mt-2 max-w-2xl text-slate-300">
+        Fast, free tools for YouTube creators (Hindi + English).
+      </p>
+
+      <div className="mt-8 grid gap-6 md:grid-cols-2">
+        {tools.map((t) => (
+          <Link
+            key={t.href}
+            href={t.href}
+            className="rounded-3xl border border-slate-800 bg-slate-900/30 p-5 hover:border-slate-600"
+          >
+            <div className="flex items-center justify-between gap-3">
+              <div className="text-lg font-semibold">{t.title}</div>
+              {t.badge ? (
+                <span className="rounded-full border border-slate-700 px-3 py-1 text-xs text-slate-200">
+                  {t.badge}
+                </span>
+              ) : null}
+            </div>
+
+            <p className="mt-2 text-sm text-slate-300">{t.desc}</p>
+            <div className="mt-4 text-sm font-semibold text-white">
+              Use tool →
+            </div>
+          </Link>
+        ))}
+      </div>
+    </main>
+  );
+}
