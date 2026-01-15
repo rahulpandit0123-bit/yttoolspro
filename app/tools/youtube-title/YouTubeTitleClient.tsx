@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 type Lang = "en" | "hi";
 type Style = "viral" | "seo" | "emotional" | "question" | "list";
@@ -143,91 +143,130 @@ function makeTitles(topic: string, lang: Lang, style: Style) {
   return Array.from(new Set(list)).slice(0, 10);
 }
 
+function Toast({
+  show,
+  message,
+  onClose,
+}: {
+  show: boolean;
+  message: string;
+  onClose: () => void;
+}) {
+  useEffect(() => {
+    if (!show) return;
+    const t = setTimeout(onClose, 1400);
+    return () => clearTimeout(t);
+  }, [show, onClose]);
+
+  if (!show) return null;
+
+  return (
+    <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2">
+      <div className="rounded-2xl border border-slate-700 bg-slate-950/90 px-4 py-3 text-sm text-slate-100 shadow-lg">
+        {message}
+      </div>
+    </div>
+  );
+}
+
 export default function YouTubeTitleClient() {
   const [topic, setTopic] = useState("");
   const [lang, setLang] = useState<Lang>("hi");
   const [style, setStyle] = useState<Style>("viral");
+  const [toast, setToast] = useState<{ show: boolean; msg: string }>({
+    show: false,
+    msg: "",
+  });
 
   const titles = useMemo(() => makeTitles(topic, lang, style), [topic, lang, style]);
 
-  async function copy(text: string) {
+  async function copy(text: string, msg = "Copied ✅") {
     if (!text) return;
     await navigator.clipboard.writeText(text);
-    alert("Copied!");
+    setToast({ show: true, msg });
   }
 
   return (
-    <section className="mt-6 rounded-3xl border border-slate-800 bg-slate-900/30 p-5">
-      <div className="grid gap-4 md:grid-cols-3">
-        <div className="md:col-span-1">
-          <div className="text-sm font-semibold text-slate-200">Topic</div>
-          <input
-            value={topic}
-            onChange={(e) => setTopic(e.target.value)}
-            placeholder='Example: "Galwan song", "हनुमान चालीसा", "Fitness tips"'
-            className="mt-2 w-full rounded-2xl border border-slate-800 bg-slate-950/40 px-4 py-3 text-slate-100 placeholder:text-slate-500 outline-none focus:border-slate-600"
-          />
-          <div className="mt-2 text-xs text-slate-400">Tip: 2–5 words best.</div>
-        </div>
-
-        <div>
-          <div className="text-sm font-semibold text-slate-200">Language</div>
-          <select
-            value={lang}
-            onChange={(e) => setLang(e.target.value as Lang)}
-            className="mt-2 w-full rounded-2xl border border-slate-800 bg-slate-950/40 px-4 py-3 text-slate-100 outline-none focus:border-slate-600"
-          >
-            <option value="hi">Hindi</option>
-            <option value="en">English</option>
-          </select>
-        </div>
-
-        <div>
-          <div className="text-sm font-semibold text-slate-200">Style</div>
-          <select
-            value={style}
-            onChange={(e) => setStyle(e.target.value as Style)}
-            className="mt-2 w-full rounded-2xl border border-slate-800 bg-slate-950/40 px-4 py-3 text-slate-100 outline-none focus:border-slate-600"
-          >
-            <option value="viral">Viral</option>
-            <option value="seo">SEO</option>
-            <option value="emotional">Emotional</option>
-            <option value="question">Question</option>
-            <option value="list">List</option>
-          </select>
-        </div>
-      </div>
-
-      <div className="mt-6 rounded-2xl border border-slate-800 bg-slate-950/30 p-4">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="text-sm text-slate-400">Generated titles (click any to copy)</div>
-          <button
-            onClick={() => copy(titles.join("\n"))}
-            className="rounded-xl bg-white px-4 py-2 text-sm font-semibold text-slate-950"
-            disabled={titles.length === 0}
-          >
-            Copy All
-          </button>
-        </div>
-
-        {titles.length === 0 ? (
-          <div className="mt-4 text-sm text-slate-400">Enter a topic to generate titles.</div>
-        ) : (
-          <div className="mt-4 grid gap-2 sm:grid-cols-2">
-            {titles.map((t) => (
-              <button
-                key={t}
-                onClick={() => copy(t)}
-                className="rounded-2xl border border-slate-800 bg-slate-950/20 px-4 py-3 text-left text-sm hover:border-slate-600"
-                title="Click to copy"
-              >
-                {t}
-                <div className="mt-1 text-xs text-slate-500">Click to copy</div>
-              </button>
-            ))}
+    <>
+      <section className="mt-6 rounded-3xl border border-slate-800 bg-slate-900/30 p-5">
+        <div className="grid gap-4 md:grid-cols-3">
+          <div className="md:col-span-1">
+            <div className="text-sm font-semibold text-slate-200">Topic</div>
+            <input
+              value={topic}
+              onChange={(e) => setTopic(e.target.value)}
+              placeholder='Example: "Galwan song", "हनुमान चालीसा", "Fitness tips"'
+              className="mt-2 w-full rounded-2xl border border-slate-800 bg-slate-950/40 px-4 py-3 text-slate-100 placeholder:text-slate-500 outline-none focus:border-slate-600"
+            />
+            <div className="mt-2 text-xs text-slate-400">Tip: 2–5 words best.</div>
           </div>
-        )}
-      </div>
-    </section>
+
+          <div>
+            <div className="text-sm font-semibold text-slate-200">Language</div>
+            <select
+              value={lang}
+              onChange={(e) => setLang(e.target.value as Lang)}
+              className="mt-2 w-full rounded-2xl border border-slate-800 bg-slate-950/40 px-4 py-3 text-slate-100 outline-none focus:border-slate-600"
+            >
+              <option value="hi">Hindi</option>
+              <option value="en">English</option>
+            </select>
+          </div>
+
+          <div>
+            <div className="text-sm font-semibold text-slate-200">Style</div>
+            <select
+              value={style}
+              onChange={(e) => setStyle(e.target.value as Style)}
+              className="mt-2 w-full rounded-2xl border border-slate-800 bg-slate-950/40 px-4 py-3 text-slate-100 outline-none focus:border-slate-600"
+            >
+              <option value="viral">Viral</option>
+              <option value="seo">SEO</option>
+              <option value="emotional">Emotional</option>
+              <option value="question">Question</option>
+              <option value="list">List</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="mt-6 rounded-2xl border border-slate-800 bg-slate-950/30 p-4">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="text-sm text-slate-400">Generated titles (click any to copy)</div>
+
+            <button
+              onClick={() => copy(titles.join("\n"), "Copied all titles ✅")}
+              className="rounded-xl bg-white px-4 py-2 text-sm font-semibold text-slate-950 disabled:opacity-50 active:scale-[0.98]"
+              disabled={titles.length === 0}
+            >
+              Copy All
+            </button>
+          </div>
+
+          {titles.length === 0 ? (
+            <div className="mt-4 text-sm text-slate-400">Enter a topic to generate titles.</div>
+          ) : (
+            <div className="mt-4 grid gap-2 sm:grid-cols-2">
+              {titles.map((t) => (
+                <button
+                  key={t}
+                  onClick={() => copy(t, "Copied title ✅")}
+                  className="rounded-2xl border border-slate-800 bg-slate-950/20 px-4 py-3 text-left text-sm hover:border-slate-600 active:scale-[0.99]"
+                  title="Click to copy"
+                >
+                  {t}
+                  <div className="mt-1 text-xs text-slate-500">Click to copy</div>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      <Toast
+        show={toast.show}
+        message={toast.msg}
+        onClose={() => setToast({ show: false, msg: "" })}
+      />
+    </>
   );
 }

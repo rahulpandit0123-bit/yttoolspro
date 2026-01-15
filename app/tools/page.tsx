@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import ToolsClient from "./ToolsClient";
 
 export const metadata: Metadata = {
-  title: "YouTube Tools — YTToolsPro",
+  title: "YouTube Tools (Free) – Thumbnail, Embed, Timestamp | YTToolsPro",
   description:
-    "Free YouTube tools for creators: Thumbnail Downloader, Embed Code Generator, Timestamp Link Generator, Hashtag Generator, Title Generator.",
+    "Explore free YouTube creator tools: YouTube Thumbnail Downloader, Embed Code Generator, Timestamp Link Generator, Hashtag Generator, and Title Generator. Fast, simple, and no login required.",
 };
 
 const tools = [
@@ -43,38 +44,54 @@ const tools = [
 export default function ToolsPage() {
   return (
     <main className="mx-auto max-w-6xl px-4 py-10">
-      <Link href="/" className="text-sm text-slate-400 hover:text-slate-200">
-        ← Home
-      </Link>
+      {/* Breadcrumb */}
+      <nav className="text-sm text-slate-400">
+        <Link href="/" className="hover:text-slate-200">
+          Home
+        </Link>
+        <span className="mx-2">/</span>
+        <span className="text-slate-200">Tools</span>
+      </nav>
 
-      <h1 className="mt-4 text-3xl font-bold">All YouTube Tools</h1>
-      <p className="mt-2 max-w-2xl text-slate-300">
-        Fast, free tools for YouTube creators (Hindi + English).
-      </p>
+      {/* ✅ Attractive UI (search + filters + cards) */}
+      <ToolsClient tools={tools} />
 
-      <div className="mt-8 grid gap-6 md:grid-cols-2">
-        {tools.map((t) => (
+      {/* ✅ Extra SEO text (helps Google understand the page) */}
+      <section className="mt-10 rounded-3xl border border-slate-800 bg-slate-900/20 p-6">
+        <h2 className="text-xl font-semibold">Free YouTube Tools by YTToolsPro</h2>
+        <p className="mt-3 text-slate-300">
+          YTToolsPro is a collection of fast, free YouTube utilities made for creators (Hindi + English).
+          Use these tools to download YouTube thumbnails, generate embed codes, create timestamp links,
+          and generate hashtags & titles for Shorts and videos.
+        </p>
+
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
           <Link
-            key={t.href}
-            href={t.href}
-            className="rounded-3xl border border-slate-800 bg-slate-900/30 p-5 hover:border-slate-600"
+            href="/tools/youtube-thumbnail"
+            className="rounded-2xl border border-slate-800 bg-slate-950/20 p-4 hover:border-slate-600"
           >
-            <div className="flex items-center justify-between gap-3">
-              <div className="text-lg font-semibold">{t.title}</div>
-              {t.badge ? (
-                <span className="rounded-full border border-slate-700 px-3 py-1 text-xs text-slate-200">
-                  {t.badge}
-                </span>
-              ) : null}
-            </div>
-
-            <p className="mt-2 text-sm text-slate-300">{t.desc}</p>
-            <div className="mt-4 text-sm font-semibold text-white">
-              Use tool →
-            </div>
+            YouTube Thumbnail Downloader →
           </Link>
-        ))}
-      </div>
+          <Link
+            href="/tools/youtube-embed"
+            className="rounded-2xl border border-slate-800 bg-slate-950/20 p-4 hover:border-slate-600"
+          >
+            YouTube Embed Code Generator →
+          </Link>
+          <Link
+            href="/tools/youtube-timestamp"
+            className="rounded-2xl border border-slate-800 bg-slate-950/20 p-4 hover:border-slate-600"
+          >
+            YouTube Timestamp Link Generator →
+          </Link>
+          <Link
+            href="/tools/youtube-hashtag"
+            className="rounded-2xl border border-slate-800 bg-slate-950/20 p-4 hover:border-slate-600"
+          >
+            YouTube Hashtag Generator →
+          </Link>
+        </div>
+      </section>
     </main>
   );
 }

@@ -1,7 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
 
 function getVideoId(input: string) {
   try {
@@ -38,9 +37,39 @@ function toSeconds(mmss: string) {
   return 0;
 }
 
+function Toast({
+  show,
+  message,
+  onClose,
+}: {
+  show: boolean;
+  message: string;
+  onClose: () => void;
+}) {
+  useEffect(() => {
+    if (!show) return;
+    const t = setTimeout(onClose, 1400);
+    return () => clearTimeout(t);
+  }, [show, onClose]);
+
+  if (!show) return null;
+
+  return (
+    <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2">
+      <div className="rounded-2xl border border-slate-700 bg-slate-950/90 px-4 py-3 text-sm text-slate-100 shadow-lg">
+        {message}
+      </div>
+    </div>
+  );
+}
+
 export default function YouTubeTimestampClient() {
   const [url, setUrl] = useState("");
   const [time, setTime] = useState("1:00");
+  const [toast, setToast] = useState<{ show: boolean; msg: string }>({
+    show: false,
+    msg: "",
+  });
 
   const videoId = useMemo(() => getVideoId(url), [url]);
   const seconds = useMemo(() => toSeconds(time), [time]);
@@ -52,7 +81,7 @@ export default function YouTubeTimestampClient() {
 
   async function copy(text: string) {
     await navigator.clipboard.writeText(text);
-    alert("Copied!");
+    setToast({ show: true, msg: "Copied timestamp link ✅" });
   }
 
   return (
@@ -62,14 +91,14 @@ export default function YouTubeTimestampClient() {
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           placeholder="Paste YouTube video URL"
-          className="rounded-2xl border border-slate-800 bg-slate-950/40 px-4 py-3 text-slate-100"
+          className="rounded-2xl border border-slate-800 bg-slate-950/40 px-4 py-3 text-slate-100 placeholder:text-slate-500 outline-none focus:border-slate-600"
         />
 
         <input
           value={time}
           onChange={(e) => setTime(e.target.value)}
           placeholder="Time (mm:ss) e.g. 2:35"
-          className="rounded-2xl border border-slate-800 bg-slate-950/40 px-4 py-3 text-slate-100"
+          className="rounded-2xl border border-slate-800 bg-slate-950/40 px-4 py-3 text-slate-100 placeholder:text-slate-500 outline-none focus:border-slate-600"
         />
       </div>
 
@@ -91,7 +120,7 @@ export default function YouTubeTimestampClient() {
             <div className="flex gap-2">
               <button
                 onClick={() => copy(shareLink)}
-                className="rounded-xl bg-white px-4 py-2 text-sm font-semibold text-slate-950"
+                className="rounded-xl bg-white px-4 py-2 text-sm font-semibold text-slate-950 active:scale-[0.98]"
               >
                 Copy Link
               </button>
@@ -99,7 +128,7 @@ export default function YouTubeTimestampClient() {
                 href={shareLink}
                 target="_blank"
                 rel="noreferrer"
-                className="rounded-xl border border-slate-700 px-4 py-2 text-sm"
+                className="rounded-xl border border-slate-700 px-4 py-2 text-sm hover:border-slate-500"
               >
                 Open
               </a>
@@ -107,6 +136,12 @@ export default function YouTubeTimestampClient() {
           </div>
         </div>
       )}
+
+      <Toast
+        show={toast.show}
+        message={toast.msg}
+        onClose={() => setToast({ show: false, msg: "" })}
+      />
     </>
   );
 }
