@@ -5,7 +5,7 @@ import YouTubeEmbedClient from "./YouTubeEmbedClient";
 export const metadata: Metadata = {
   title: "YouTube Embed Code Generator (Responsive, No-Cookie) – YTToolsPro",
   description:
-    "Generate responsive and privacy-friendly YouTube embed code (youtube-nocookie) with optional start time. Free tool for creators & bloggers.",
+    "Generate responsive, privacy-friendly YouTube embed code (nocookie) with optional start time. Free embed generator for creators & bloggers.",
 };
 
 export default function YouTubeEmbedPage() {
@@ -24,47 +24,66 @@ export default function YouTubeEmbedPage() {
         <span className="text-slate-200">YouTube Embed Code Generator</span>
       </nav>
 
-      <h1 className="mt-4 text-3xl font-bold">YouTube Embed Code Generator</h1>
-      <p className="mt-2 max-w-2xl text-slate-300">
-        Generate responsive, privacy-friendly YouTube embed code with optional start time.
-      </p>
+      {/* ✅ Main Tool UI */}
+      <div className="mt-6">
+        <YouTubeEmbedClient />
+      </div>
 
-      <YouTubeEmbedClient />
-
-      {/* ✅ Try More Tools (Internal Links for SEO + Traffic) */}
-      <section className="mt-10 rounded-3xl border border-slate-800 bg-slate-900/30 p-5">
-        <h2 className="text-lg font-semibold">Try More Tools</h2>
-
-        <div className="mt-4 grid gap-3 sm:grid-cols-2">
-          <Link
-            href="/tools/youtube-thumbnail"
-            className="rounded-2xl border border-slate-800 bg-slate-950/20 p-4 hover:border-slate-600"
-          >
-            YouTube Thumbnail Downloader →
+      {/* ✅ Internal links (Google ko help hota hai) */}
+      <div className="mt-10 rounded-3xl border border-slate-800 bg-slate-900/30 p-5">
+        <div className="text-sm text-slate-300">Try other tools:</div>
+        <div className="mt-2 flex flex-wrap gap-3 text-sm">
+          <Link className="underline hover:text-slate-200" href="/tools/youtube-thumbnail">
+            Thumbnail Downloader
           </Link>
-
-          <Link
-            href="/tools/youtube-timestamp"
-            className="rounded-2xl border border-slate-800 bg-slate-950/20 p-4 hover:border-slate-600"
-          >
-            YouTube Timestamp Link Generator →
+          <Link className="underline hover:text-slate-200" href="/tools/youtube-timestamp">
+            Timestamp Generator
           </Link>
-
-          <Link
-            href="/tools/youtube-hashtag"
-            className="rounded-2xl border border-slate-800 bg-slate-950/20 p-4 hover:border-slate-600"
-          >
-            YouTube Hashtag Generator →
+          <Link className="underline hover:text-slate-200" href="/tools/youtube-hashtag">
+            Hashtag Generator
           </Link>
-
-          <Link
-            href="/tools/youtube-title"
-            className="rounded-2xl border border-slate-800 bg-slate-950/20 p-4 hover:border-slate-600"
-          >
-            YouTube Title Generator →
+          <Link className="underline hover:text-slate-200" href="/tools/youtube-title">
+            Title Generator
           </Link>
         </div>
-      </section>
+      </div>
+
+      {/* ✅ FAQ Schema (SEO) */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: [
+              {
+                "@type": "Question",
+                name: "Is this YouTube embed code generator free?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "Yes, this YouTube embed code generator is completely free to use.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "Does it create privacy-friendly embeds?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "Yes. It generates YouTube nocookie (privacy-enhanced) embed code.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "Can I start the video at a specific time?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "Yes. You can add an optional start time (mm:ss) and the embed will start from that timestamp.",
+                },
+              },
+            ],
+          }),
+        }}
+      />
     </main>
   );
 }

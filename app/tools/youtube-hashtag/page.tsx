@@ -2,13 +2,75 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import YouTubeHashtagClient from "./YouTubeHashtagClient";
 
+const TITLE = "YouTube Hashtag Generator (Shorts + Videos) – YTToolsPro";
+const DESC =
+  "Generate YouTube hashtags for Shorts and videos instantly. Paste a topic/keyword and get optimized hashtags. Free tool for creators in Hindi + English.";
+
 export const metadata: Metadata = {
-  title: "YouTube Hashtag Generator (Shorts + Videos) – YTToolsPro",
-  description:
-    "Generate YouTube hashtags for Shorts and videos instantly. Paste a topic/keyword and get optimized hashtags. Free tool for creators in Hindi + English.",
+  title: TITLE,
+  description: DESC,
+  alternates: {
+    canonical: "https://yttoolspro.vercel.app/tools/youtube-hashtag",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  keywords: [
+    "youtube hashtag generator",
+    "hashtags for youtube shorts",
+    "youtube shorts hashtags",
+    "best hashtags for youtube",
+    "youtube tags generator",
+    "viral hashtags youtube",
+    "hindi english hashtags",
+  ],
+  openGraph: {
+    title: TITLE,
+    description: DESC,
+    url: "https://yttoolspro.vercel.app/tools/youtube-hashtag",
+    siteName: "YTToolsPro",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: TITLE,
+    description: DESC,
+  },
 };
 
 export default function YouTubeHashtagPage() {
+  const faq = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "Is this YouTube Hashtag Generator free?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes, this tool is completely free to use.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "How many hashtags should I use on YouTube?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Use a small set of relevant hashtags. Many creators use 3–15 focused hashtags depending on the content.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Does this work for YouTube Shorts?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes. The generated hashtags can be used for Shorts and normal videos.",
+        },
+      },
+    ],
+  };
+
   return (
     <main className="mx-auto max-w-6xl px-4 py-10">
       {/* ✅ Breadcrumb (Home / Tools / This Page) */}
@@ -26,8 +88,7 @@ export default function YouTubeHashtagPage() {
 
       <h1 className="mt-4 text-3xl font-bold">YouTube Hashtag Generator</h1>
       <p className="mt-2 max-w-2xl text-slate-300">
-        Type your topic (Hindi/English) and generate optimized hashtags for YouTube
-        Shorts and videos. One-click copy.
+        Type your topic (Hindi/English) and generate optimized hashtags for YouTube Shorts and videos. One-click copy.
       </p>
 
       <YouTubeHashtagClient />
@@ -70,38 +131,7 @@ export default function YouTubeHashtagPage() {
       {/* ✅ FAQ Schema for SEO */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "FAQPage",
-            mainEntity: [
-              {
-                "@type": "Question",
-                name: "Is this YouTube Hashtag Generator free?",
-                acceptedAnswer: {
-                  "@type": "Answer",
-                  text: "Yes, this tool is completely free to use.",
-                },
-              },
-              {
-                "@type": "Question",
-                name: "How many hashtags should I use on YouTube?",
-                acceptedAnswer: {
-                  "@type": "Answer",
-                  text: "Use a small set of relevant hashtags. Many creators use 3–15 focused hashtags depending on the content.",
-                },
-              },
-              {
-                "@type": "Question",
-                name: "Does this work for YouTube Shorts?",
-                acceptedAnswer: {
-                  "@type": "Answer",
-                  text: "Yes. The generated hashtags can be used for Shorts and normal videos.",
-                },
-              },
-            ],
-          }),
-        }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faq) }}
       />
     </main>
   );

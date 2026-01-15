@@ -2,10 +2,41 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import YouTubeTitleClient from "./YouTubeTitleClient";
 
+const TITLE = "YouTube Title Generator (Viral + SEO) – YTToolsPro";
+const DESC =
+  "Generate catchy YouTube titles in Hindi + English with Viral/SEO styles. Free YouTube title generator for creators and Shorts.";
+
 export const metadata: Metadata = {
-  title: "YouTube Title Generator (Viral + SEO) – YTToolsPro",
-  description:
-    "Generate catchy YouTube titles in Hindi + English with Viral/SEO styles. Free YouTube title generator for creators and Shorts.",
+  title: TITLE,
+  description: DESC,
+  alternates: {
+    canonical: "https://yttoolspro.vercel.app/tools/youtube-title",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  keywords: [
+    "youtube title generator",
+    "viral youtube titles",
+    "youtube seo title",
+    "youtube shorts title",
+    "hindi english youtube titles",
+    "best title for youtube video",
+    "catchy youtube title",
+  ],
+  openGraph: {
+    title: TITLE,
+    description: DESC,
+    url: "https://yttoolspro.vercel.app/tools/youtube-title",
+    siteName: "YTToolsPro",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: TITLE,
+    description: DESC,
+  },
 };
 
 export default function YouTubeTitlePage() {
@@ -26,8 +57,8 @@ export default function YouTubeTitlePage() {
 
       <h1 className="mt-4 text-3xl font-bold">YouTube Title Generator</h1>
       <p className="mt-2 max-w-2xl text-slate-300">
-        Enter your topic and generate YouTube titles in Hindi or English. Pick a style
-        like Viral, SEO, Emotional, Question, or List.
+        Enter your topic and generate YouTube titles in Hindi or English. Pick a style like
+        Viral, SEO, Emotional, Question, or List.
       </p>
 
       <YouTubeTitleClient />

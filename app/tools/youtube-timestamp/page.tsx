@@ -2,13 +2,74 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import YouTubeTimestampClient from "./YouTubeTimestampClient";
 
+const TITLE = "YouTube Timestamp Link Generator (mm:ss) – YTToolsPro";
+const DESC =
+  "Create YouTube timestamp links in seconds. Convert mm:ss into shareable YouTube time links. Free tool for creators and editors.";
+
 export const metadata: Metadata = {
-  title: "YouTube Timestamp Link Generator (mm:ss) – YTToolsPro",
-  description:
-    "Create YouTube timestamp links in seconds. Convert mm:ss into shareable YouTube time links. Free tool for creators and editors.",
+  title: TITLE,
+  description: DESC,
+  alternates: {
+    canonical: "https://yttoolspro.vercel.app/tools/youtube-timestamp",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  keywords: [
+    "youtube timestamp link generator",
+    "youtube timestamp",
+    "youtube time link",
+    "timestamp url youtube",
+    "youtube share link with time",
+    "youtu.be t link",
+  ],
+  openGraph: {
+    title: TITLE,
+    description: DESC,
+    url: "https://yttoolspro.vercel.app/tools/youtube-timestamp",
+    siteName: "YTToolsPro",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: TITLE,
+    description: DESC,
+  },
 };
 
 export default function YouTubeTimestampPage() {
+  const faq = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "Is this YouTube Timestamp Link Generator free?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes, this YouTube Timestamp Link Generator is completely free to use.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "How do I create a timestamp link for YouTube?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Paste your YouTube link, enter time like 2:35, and copy the generated share link.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Does it support Shorts and youtu.be links?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes. It supports YouTube watch links, Shorts links, and youtu.be short links.",
+        },
+      },
+    ],
+  };
+
   return (
     <main className="mx-auto max-w-6xl px-4 py-10">
       {/* ✅ Breadcrumb (Home / Tools / This Page) */}
@@ -65,6 +126,12 @@ export default function YouTubeTimestampPage() {
           </Link>
         </div>
       </section>
+
+      {/* ✅ FAQ Schema for SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faq) }}
+      />
     </main>
   );
 }
