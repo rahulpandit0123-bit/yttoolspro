@@ -1,242 +1,233 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
-type PresetKey =
-  | "shorts"
-  | "trending"
-  | "gaming"
-  | "motivation"
-  | "finance"
-  | "bollywood"
-  | "bhakti";
+type Lang = "en" | "hi";
+type Style = "viral" | "seo" | "emotional" | "question" | "list";
 
-const PRESETS: Record<PresetKey, string[]> = {
-  shorts: ["shorts", "ytshorts", "shortsvideo", "shortsfeed", "viralshorts"],
-  trending: ["trending", "viral", "newvideo", "youtubetrending", "explore"],
-  gaming: ["gaming", "gamer", "gameplay", "live", "gamingcommunity"],
-  motivation: ["motivation", "inspiration", "success", "mindset", "quotes"],
-  finance: ["finance", "business", "investing", "stockmarket", "money"],
-  bollywood: ["bollywood", "song", "music", "hindisong", "newrelease"],
-  bhakti: ["bhakti", "devotional", "bhajan", "hanuman", "shiv"],
-};
-
-function cleanWord(s: string) {
-  return s
-    .trim()
-    .replace(/[#]+/g, "")
-    .replace(/[^\p{L}\p{N}\s-]/gu, " ")
-    .replace(/\s+/g, " ")
-    .trim();
+function cleanTopic(s: string) {
+  return s.trim().replace(/\s+/g, " ");
 }
 
-function toTags(input: string) {
-  const base = cleanWord(input);
-  if (!base) return [];
+function makeTitles(topic: string, lang: Lang, style: Style) {
+  const t = cleanTopic(topic);
+  if (!t) return [];
 
-  const parts = base
-    .split(/[,|\n]/g)
-    .map((x) => cleanWord(x))
-    .filter(Boolean);
+  const en = {
+    viral: [
+      `This ${t} Trick Went VIRAL 🔥`,
+      `I Tried ${t} for 7 Days… Here’s What Happened`,
+      `${t} in 60 Seconds (Must Watch!)`,
+      `Nobody Tells You This About ${t}`,
+      `Stop Doing ${t} Like This ❌ Do This Instead ✅`,
+      `${t} Challenge: Can You Do It?`,
+      `The Fastest Way to Learn ${t}`,
+      `${t} Mistakes You MUST Avoid`,
+      `Top Secret ${t} Hacks (Real)`,
+      `The Truth About ${t} (Shocking)`,
+    ],
+    seo: [
+      `${t} Explained (Step-by-Step)`,
+      `How to Do ${t} (Beginner to Pro)`,
+      `${t} Tutorial for Beginners`,
+      `${t} Guide: Tips, Steps & Examples`,
+      `Best Way to ${t} (2026)`,
+      `${t} Complete Tutorial (Easy)`,
+      `How I Improved ${t} (Real Method)`,
+      `${t} Tips & Tricks You Can Use Today`,
+      `Learn ${t} Fast (Simple Steps)`,
+      `${t} Full Guide (No Confusion)`,
+    ],
+    emotional: [
+      `I Wish I Knew This About ${t} Earlier…`,
+      `${t} Changed My Life (Real Story)`,
+      `If You’re Struggling With ${t}, Watch This`,
+      `The Most Honest Video About ${t}`,
+      `Don’t Give Up on ${t} — Do This`,
+      `My Biggest Lesson From ${t}`,
+      `I Failed at ${t}… Then This Worked`,
+      `The Hard Truth About ${t}`,
+      `You’re Not Alone: ${t} Journey`,
+      `This ${t} Advice Is Gold`,
+    ],
+    question: [
+      `Can You Really Do ${t}?`,
+      `Is ${t} Worth It? (Honest Answer)`,
+      `What Happens If You Try ${t}?`,
+      `Why Is ${t} So Hard?`,
+      `How Long Does ${t} Take?`,
+      `What Is the Best Way to ${t}?`,
+      `Should You Learn ${t} in 2026?`,
+      `Is ${t} Actually Easy?`,
+      `Do You Need ${t} to Succeed?`,
+      `What Nobody Answers About ${t}`,
+    ],
+    list: [
+      `7 ${t} Tips That Actually Work`,
+      `Top 10 ${t} Mistakes (Avoid These!)`,
+      `5 Best Tools for ${t}`,
+      `10 Easy Steps to ${t}`,
+      `7 Ways to Improve ${t} Today`,
+      `Top 5 ${t} Secrets (Beginner Friendly)`,
+      `8 ${t} Ideas You Can Copy`,
+      `Best ${t} Examples (Real)`,
+      `6 Simple ${t} Hacks`,
+      `Top ${t} Tips for Beginners`,
+    ],
+  } as const;
 
-  const unique = Array.from(new Set(parts));
-  const compact = unique.map((p) => `#${p.replace(/\s+/g, "")}`);
-  return compact;
+  const hi = {
+    viral: [
+      `${t} का ये Trick VIRAL हो गया 🔥`,
+      `मैंने 7 दिन ${t} किया… क्या हुआ देखो`,
+      `${t} सिर्फ 60 सेकंड में (Must Watch)`,
+      `${t} के बारे में ये बात कोई नहीं बताता`,
+      `${t} ऐसे मत करो ❌ ऐसे करो ✅`,
+      `${t} Challenge: कर पाओगे?`,
+      `${t} सीखने का सबसे तेज तरीका`,
+      `${t} की बड़ी गलतियां (Avoid)`,
+      `${t} के Secret Hacks (Real)`,
+      `${t} का सच (Shocking)`,
+    ],
+    seo: [
+      `${t} Step-by-Step (आसान तरीका)`,
+      `${t} कैसे करें (Beginner to Pro)`,
+      `${t} Tutorial for Beginners`,
+      `${t} Guide: Tips, Steps & Examples`,
+      `${t} करने का Best तरीका (2026)`,
+      `${t} Complete Tutorial (Easy)`,
+      `मैंने ${t} कैसे improve किया (Real)`,
+      `${t} Tips & Tricks (आज से use करो)`,
+      `${t} जल्दी सीखो (Simple Steps)`,
+      `${t} Full Guide (No Confusion)`,
+    ],
+    emotional: [
+      `काश मुझे ${t} की ये बात पहले पता होती…`,
+      `${t} ने मेरी सोच बदल दी (Real)`,
+      `अगर ${t} में फंस रहे हो तो ये देखो`,
+      `${t} पर सबसे honest वीडियो`,
+      `${t} छोड़ो मत — ये करो`,
+      `${t} से मिली सबसे बड़ी सीख`,
+      `मैं ${t} में fail हुआ… फिर ये काम आया`,
+      `${t} की hard truth`,
+      `तुम अकेले नहीं हो: ${t} journey`,
+      `${t} की ये बात दिल छू जाएगी`,
+    ],
+    question: [
+      `क्या तुम सच में ${t} कर सकते हो?`,
+      `${t} worth it है? (Honest Answer)`,
+      `${t} करोगे तो क्या होगा?`,
+      `${t} इतना मुश्किल क्यों लगता है?`,
+      `${t} सीखने में कितना समय लगता है?`,
+      `${t} करने का best तरीका क्या है?`,
+      `2026 में ${t} सीखना चाहिए?`,
+      `${t} सच में आसान है क्या?`,
+      `${t} के बिना success possible है?`,
+      `${t} पर कोई ये सवाल जवाब नहीं देता`,
+    ],
+    list: [
+      `${t} के 7 Tips जो सच में काम करते हैं`,
+      `${t} की Top 10 गलतियां (Avoid)`,
+      `${t} के लिए 5 Best Tools`,
+      `${t} करने के 10 आसान steps`,
+      `आज से ${t} improve करने के 7 तरीके`,
+      `${t} के Top 5 secrets (Beginner Friendly)`,
+      `${t} के 8 ideas जो copy कर सकते हो`,
+      `${t} के Best examples (Real)`,
+      `${t} के 6 simple hacks`,
+      `${t} tips for beginners`,
+    ],
+  } as const;
+
+  const list = lang === "hi" ? hi[style] : en[style];
+  return Array.from(new Set(list)).slice(0, 10);
 }
 
-function formatTags(tags: string[], mode: "space" | "comma" | "newline") {
-  if (mode === "comma") return tags.join(", ");
-  if (mode === "newline") return tags.join("\n");
-  return tags.join(" ");
-}
-
-function Toast({
-  show,
-  message,
-  onClose,
-}: {
-  show: boolean;
-  message: string;
-  onClose: () => void;
-}) {
-  useEffect(() => {
-    if (!show) return;
-    const t = setTimeout(onClose, 1400);
-    return () => clearTimeout(t);
-  }, [show, onClose]);
-
-  if (!show) return null;
-
-  return (
-    <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2">
-      <div className="rounded-2xl border border-slate-700 bg-slate-950/90 px-4 py-3 text-sm text-slate-100 shadow-lg">
-        {message}
-      </div>
-    </div>
-  );
-}
-
-export default function YouTubeHashtagClient() {
+export default function YouTubeTitleClient() {
   const [topic, setTopic] = useState("");
-  const [preset, setPreset] = useState<PresetKey>("shorts");
-  const [countMode, setCountMode] = useState<10 | 20 | 30>(20);
-  const [formatMode, setFormatMode] = useState<"space" | "comma" | "newline">("space");
+  const [lang, setLang] = useState<Lang>("hi");
+  const [style, setStyle] = useState<Style>("viral");
 
-  const [toast, setToast] = useState<{ show: boolean; msg: string }>({
-    show: false,
-    msg: "",
-  });
+  const titles = useMemo(() => makeTitles(topic, lang, style), [topic, lang, style]);
 
-  const tags = useMemo(() => {
-    const primary = toTags(topic);
-
-    // Preset tags
-    const presetTags = PRESETS[preset].map((x) => `#${x.replace(/\s+/g, "")}`);
-
-    // Combine + dedupe
-    const merged = Array.from(new Set([...primary, ...presetTags]));
-
-    // Keep it clean
-    return merged.slice(0, countMode);
-  }, [topic, preset, countMode]);
-
-  const output = useMemo(() => formatTags(tags, formatMode), [tags, formatMode]);
-  const chars = useMemo(() => output.length, [output]);
-
-  async function copy(text: string, msg = "Copied ✅") {
+  async function copy(text: string) {
     if (!text) return;
     await navigator.clipboard.writeText(text);
-    setToast({ show: true, msg });
+    alert("Copied!");
   }
 
-  const warn =
-    chars > 350
-      ? "Too long: try fewer hashtags or shorter keywords."
-      : chars > 250
-      ? "Long: consider using fewer hashtags for cleaner descriptions."
-      : "";
-
   return (
-    <>
-      <section className="mt-6 rounded-3xl border border-slate-800 bg-slate-900/30 p-5">
-        {/* Controls */}
-        <div className="grid gap-4 md:grid-cols-2">
-          <div>
-            <div className="text-sm font-semibold text-slate-200">Topic / Keywords</div>
-            <input
-              value={topic}
-              onChange={(e) => setTopic(e.target.value)}
-              placeholder='Example: "Battle of Galwan song", "हनुमान चालीसा"'
-              className="mt-2 w-full rounded-2xl border border-slate-800 bg-slate-950/40 px-4 py-3 text-slate-100 placeholder:text-slate-500 outline-none focus:border-slate-600"
-            />
-            <div className="mt-2 text-xs text-slate-400">
-              Tip: comma-separated keywords give better results.
-            </div>
-          </div>
-
-          <div className="grid gap-3">
-            <div>
-              <div className="text-sm font-semibold text-slate-200">Category preset</div>
-              <select
-                value={preset}
-                onChange={(e) => setPreset(e.target.value as PresetKey)}
-                className="mt-2 w-full rounded-2xl border border-slate-800 bg-slate-950/40 px-4 py-3 text-slate-100 outline-none focus:border-slate-600"
-              >
-                <option value="shorts">Shorts</option>
-                <option value="trending">Trending</option>
-                <option value="gaming">Gaming</option>
-                <option value="motivation">Motivation</option>
-                <option value="finance">Finance</option>
-                <option value="bollywood">Bollywood</option>
-                <option value="bhakti">Bhakti</option>
-              </select>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <div className="text-sm font-semibold text-slate-200">Hashtag count</div>
-                <select
-                  value={countMode}
-                  onChange={(e) => setCountMode(Number(e.target.value) as 10 | 20 | 30)}
-                  className="mt-2 w-full rounded-2xl border border-slate-800 bg-slate-950/40 px-4 py-3 text-slate-100 outline-none focus:border-slate-600"
-                >
-                  <option value={10}>Short (10)</option>
-                  <option value={20}>Medium (20)</option>
-                  <option value={30}>Max (30)</option>
-                </select>
-              </div>
-
-              <div>
-                <div className="text-sm font-semibold text-slate-200">Copy format</div>
-                <select
-                  value={formatMode}
-                  onChange={(e) => setFormatMode(e.target.value as any)}
-                  className="mt-2 w-full rounded-2xl border border-slate-800 bg-slate-950/40 px-4 py-3 text-slate-100 outline-none focus:border-slate-600"
-                >
-                  <option value="space">Space separated</option>
-                  <option value="comma">Comma separated</option>
-                  <option value="newline">New lines</option>
-                </select>
-              </div>
-            </div>
-          </div>
+    <section className="mt-6 rounded-3xl border border-slate-800 bg-slate-900/30 p-5">
+      <div className="grid gap-4 md:grid-cols-3">
+        <div className="md:col-span-1">
+          <div className="text-sm font-semibold text-slate-200">Topic</div>
+          <input
+            value={topic}
+            onChange={(e) => setTopic(e.target.value)}
+            placeholder='Example: "Cricket highlights", "Budget travel India", "Fitness tips"'
+            className="mt-2 w-full rounded-2xl border border-slate-800 bg-slate-950/40 px-4 py-3 text-slate-100 placeholder:text-slate-300 outline-none focus:border-slate-600"
+          />
+          <div className="mt-2 text-xs text-slate-400">Tip: 2–5 words best.</div>
         </div>
 
-        {/* Output */}
-        <div className="mt-6 rounded-2xl border border-slate-800 bg-slate-950/30 p-4">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="min-w-0">
-              <div className="text-sm text-slate-400">Generated hashtags</div>
-              <pre className="mt-1 whitespace-pre-wrap break-words font-semibold">
-                {output || "—"}
-              </pre>
-              <div className="mt-2 flex flex-wrap gap-3 text-xs text-slate-500">
-                <span>Count: {tags.length}</span>
-                <span>Characters: {chars}</span>
-                {warn && <span className="text-amber-300">{warn}</span>}
-              </div>
-            </div>
-
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => copy(output, "Copied all hashtags ✅")}
-                className="rounded-xl bg-white px-4 py-2 text-sm font-semibold text-slate-950 active:scale-[0.98]"
-              >
-                Copy All
-              </button>
-              <button
-                onClick={() => copy(formatTags(tags.slice(0, 3), formatMode), "Copied top 3 ✅")}
-                className="rounded-xl border border-slate-700 px-4 py-2 text-sm hover:border-slate-500 active:scale-[0.98]"
-              >
-                Copy Top 3
-              </button>
-            </div>
-          </div>
+        <div>
+          <div className="text-sm font-semibold text-slate-200">Language</div>
+          <select
+            value={lang}
+            onChange={(e) => setLang(e.target.value as Lang)}
+            className="mt-2 w-full rounded-2xl border border-slate-800 bg-slate-950/40 px-4 py-3 text-slate-100 outline-none focus:border-slate-600"
+          >
+            <option value="hi">Hindi</option>
+            <option value="en">English</option>
+          </select>
         </div>
 
-        {/* Individual tags */}
-        {tags.length > 0 && (
-          <div className="mt-6 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-            {tags.map((t) => (
+        <div>
+          <div className="text-sm font-semibold text-slate-200">Style</div>
+          <select
+            value={style}
+            onChange={(e) => setStyle(e.target.value as Style)}
+            className="mt-2 w-full rounded-2xl border border-slate-800 bg-slate-950/40 px-4 py-3 text-slate-100 outline-none focus:border-slate-600"
+          >
+            <option value="viral">Viral</option>
+            <option value="seo">SEO</option>
+            <option value="emotional">Emotional</option>
+            <option value="question">Question</option>
+            <option value="list">List</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="mt-6 rounded-2xl border border-slate-800 bg-slate-950/30 p-4">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="text-sm text-slate-400">Generated titles (click any to copy)</div>
+          <button
+            onClick={() => copy(titles.join("\n"))}
+            className="rounded-xl bg-white px-4 py-2 text-sm font-semibold text-slate-950 disabled:opacity-50"
+            disabled={titles.length === 0}
+          >
+            Copy All
+          </button>
+        </div>
+
+        {titles.length === 0 ? (
+          <div className="mt-4 text-sm text-slate-400">Enter a topic to generate titles.</div>
+        ) : (
+          <div className="mt-4 grid gap-2 sm:grid-cols-2">
+            {titles.map((t) => (
               <button
                 key={t}
-                onClick={() => copy(t, `Copied ${t} ✅`)}
-                className="rounded-2xl border border-slate-800 bg-slate-950/20 px-4 py-3 text-left text-sm hover:border-slate-600 active:scale-[0.99]"
-                title="Click to copy this hashtag"
+                onClick={() => copy(t)}
+                className="rounded-2xl border border-slate-800 bg-slate-950/20 px-4 py-3 text-left text-sm text-slate-100 hover:border-slate-600"
+                title="Click to copy"
               >
                 {t}
-                <div className="mt-1 text-xs text-slate-500">Click to copy</div>
+                <div className="mt-1 text-xs text-slate-300">Click to copy</div>
               </button>
             ))}
           </div>
         )}
-      </section>
-
-      <Toast
-        show={toast.show}
-        message={toast.msg}
-        onClose={() => setToast({ show: false, msg: "" })}
-      />
-    </>
+      </div>
+    </section>
   );
 }

@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import YouTubeTitleClient from "./YouTubeTitleClient";
 
-const TITLE = "YouTube Title Generator (Viral + SEO) – YTToolsPro";
+const TITLE = "YouTube Title Generator (FREE) ⚡ Viral + SEO Titles – YTToolsPro";
 const DESC =
-  "Generate catchy YouTube titles in Hindi + English with Viral/SEO styles. Free YouTube title generator for creators and Shorts.";
+  "Generate catchy YouTube titles in Hindi + English with Viral and SEO styles. Free YouTube title generator for creators and Shorts.";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
 export default function YouTubeTitlePage() {
   return (
     <main className="mx-auto max-w-6xl px-4 py-10">
-      {/* ✅ Breadcrumb (Home / Tools / This Page) */}
+      {/* ✅ Breadcrumb */}
       <nav className="text-sm text-slate-400">
         <Link href="/" className="hover:text-slate-200">
           Home
@@ -55,50 +55,77 @@ export default function YouTubeTitlePage() {
         <span className="text-slate-200">YouTube Title Generator</span>
       </nav>
 
-      <h1 className="mt-4 text-3xl font-bold">YouTube Title Generator</h1>
+      <h1 className="mt-4 text-3xl font-bold text-slate-100">
+        YouTube Title Generator
+      </h1>
+
       <p className="mt-2 max-w-2xl text-slate-300">
-        Enter your topic and generate YouTube titles in Hindi or English. Pick a style like
-        Viral, SEO, Emotional, Question, or List.
+        Enter your topic and instantly generate YouTube titles in Hindi or English.
+        Choose Viral, SEO, Emotional, Question or List style to boost clicks and ranking.
       </p>
 
       <YouTubeTitleClient />
 
-      {/* ✅ Try More Tools (Internal Links for SEO + Traffic) */}
+      {/* ✅ Internal Linking Block */}
       <section className="mt-10 rounded-3xl border border-slate-800 bg-slate-900/30 p-5">
-        <h2 className="text-lg font-semibold">Try More Tools</h2>
+        <h2 className="text-lg font-semibold text-slate-100">
+          Try More YouTube Tools
+        </h2>
 
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           <Link
             href="/tools/youtube-thumbnail"
-            className="rounded-2xl border border-slate-800 bg-slate-950/20 p-4 hover:border-slate-600"
+            className="rounded-2xl border border-slate-800 bg-slate-950/20 p-4 text-slate-100 hover:border-slate-600"
           >
             YouTube Thumbnail Downloader →
           </Link>
 
           <Link
             href="/tools/youtube-embed"
-            className="rounded-2xl border border-slate-800 bg-slate-950/20 p-4 hover:border-slate-600"
+            className="rounded-2xl border border-slate-800 bg-slate-950/20 p-4 text-slate-100 hover:border-slate-600"
           >
             YouTube Embed Code Generator →
           </Link>
 
           <Link
             href="/tools/youtube-timestamp"
-            className="rounded-2xl border border-slate-800 bg-slate-950/20 p-4 hover:border-slate-600"
+            className="rounded-2xl border border-slate-800 bg-slate-950/20 p-4 text-slate-100 hover:border-slate-600"
           >
-            YouTube Timestamp Link Generator →
+            YouTube Timestamp Generator →
           </Link>
 
           <Link
             href="/tools/youtube-hashtag"
-            className="rounded-2xl border border-slate-800 bg-slate-950/20 p-4 hover:border-slate-600"
+            className="rounded-2xl border border-slate-800 bg-slate-950/20 p-4 text-slate-100 hover:border-slate-600"
           >
             YouTube Hashtag Generator →
           </Link>
         </div>
       </section>
 
-      {/* ✅ FAQ Schema for SEO (Google Rich Results) */}
+      {/* ✅ SOFTWARE TOOL SCHEMA (MAIN SEO BOOST) */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            name: "YouTube Title Generator",
+            applicationCategory: "WebApplication",
+            operatingSystem: "All",
+            url: "https://yttoolspro.vercel.app/tools/youtube-title",
+            description:
+              "Free YouTube Title Generator to create viral and SEO optimized titles in Hindi and English.",
+            offers: {
+              "@type": "Offer",
+              price: "0",
+              priceCurrency: "USD",
+            },
+          }),
+        }}
+      />
+
+      {/* ✅ FAQ SCHEMA */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

@@ -1,8 +1,9 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Dark theme defaults */
+  --background: #020617; /* slate-950 */
+  --foreground: #e2e8f0; /* slate-200 */
 }
 
 @theme inline {
@@ -12,15 +13,21 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Softer selection highlight (removes harsh blue selection on dark theme) */
+::selection {
+  background: rgba(217, 70, 239, 0.35); /* fuchsia */
+  color: #ffffff;
+}
+
+/* Prevent accidental "half-highlight" on big headings */
+h1,
+h2 {
+  -webkit-user-select: none;
+  user-select: none;
 }

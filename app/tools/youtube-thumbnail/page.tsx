@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import YouTubeThumbnailClient from "./YouTubeThumbnailClient";
 
-const TITLE = "YouTube Thumbnail Downloader (HD, HQ, 4K) – YTToolsPro";
+const TITLE = "YouTube Thumbnail Downloader (HD/4K) 📸 Free Tool – YTToolsPro";
 const DESC =
-  "Download YouTube thumbnails in HD, HQ & 4K quality. Free YouTube thumbnail downloader tool for creators.";
+  "Download YouTube thumbnails in HD, HQ & 4K quality. Free YouTube thumbnail downloader tool for creators (Videos + Shorts).";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -23,6 +23,7 @@ export const metadata: Metadata = {
     "youtube thumbnail hd",
     "youtube thumbnail 4k",
     "yt thumbnail downloader",
+    "youtube shorts thumbnail",
   ],
   openGraph: {
     title: TITLE,
@@ -86,7 +87,7 @@ export default function Page() {
       </nav>
 
       {/* ✅ SEO H1 */}
-      <h1 className="mt-4 text-3xl font-bold">
+      <h1 className="mt-4 text-3xl font-bold text-slate-100">
         YouTube Thumbnail Downloader (HD, HQ, 4K)
       </h1>
 
@@ -96,7 +97,7 @@ export default function Page() {
         free. Paste any YouTube video/Shorts link to get all thumbnail sizes.
       </p>
 
-      {/* ✅ Quick benefits (helps SEO + users) */}
+      {/* ✅ Quick benefits */}
       <ul className="mt-4 grid gap-2 text-sm text-slate-300 sm:grid-cols-2">
         <li>✅ Supports YouTube watch links, Shorts, youtu.be</li>
         <li>✅ One-click copy thumbnail URL</li>
@@ -110,42 +111,40 @@ export default function Page() {
 
       {/* ✅ Internal links */}
       <div className="mt-12 rounded-3xl border border-slate-800 bg-slate-900/30 p-6">
-        <h2 className="text-xl font-bold">Try More Tools</h2>
-        <p className="mt-2 text-slate-300">
-          More free YouTube tools for creators:
-        </p>
+        <h2 className="text-xl font-bold text-slate-100">Try More Tools</h2>
+        <p className="mt-2 text-slate-300">More free YouTube tools for creators:</p>
 
         <div className="mt-4 flex flex-wrap gap-3">
           <Link
             href="/tools/youtube-embed"
-            className="rounded-xl border border-slate-700 px-4 py-2 text-sm hover:border-slate-500"
+            className="rounded-xl border border-slate-700 px-4 py-2 text-sm text-slate-100 hover:border-slate-500"
           >
             YouTube Embed Generator
           </Link>
           <Link
             href="/tools/youtube-timestamp"
-            className="rounded-xl border border-slate-700 px-4 py-2 text-sm hover:border-slate-500"
+            className="rounded-xl border border-slate-700 px-4 py-2 text-sm text-slate-100 hover:border-slate-500"
           >
-            YouTube Timestamp Link
+            YouTube Timestamp Generator
           </Link>
           <Link
             href="/tools/youtube-hashtag"
-            className="rounded-xl border border-slate-700 px-4 py-2 text-sm hover:border-slate-500"
+            className="rounded-xl border border-slate-700 px-4 py-2 text-sm text-slate-100 hover:border-slate-500"
           >
             YouTube Hashtag Generator
           </Link>
           <Link
             href="/tools/youtube-title"
-            className="rounded-xl border border-slate-700 px-4 py-2 text-sm hover:border-slate-500"
+            className="rounded-xl border border-slate-700 px-4 py-2 text-sm text-slate-100 hover:border-slate-500"
           >
             YouTube Title Generator
           </Link>
         </div>
       </div>
 
-      {/* ✅ Visible FAQ (optional but good) */}
+      {/* ✅ Visible FAQ */}
       <section className="mt-12">
-        <h2 className="text-xl font-bold">FAQ</h2>
+        <h2 className="text-xl font-bold text-slate-100">FAQ</h2>
         <div className="mt-4 space-y-4 text-slate-300">
           <div className="rounded-2xl border border-slate-800 bg-slate-900/30 p-4">
             <div className="font-semibold">Is this free?</div>
@@ -167,6 +166,28 @@ export default function Page() {
           </div>
         </div>
       </section>
+
+      {/* ✅ SOFTWARE TOOL SCHEMA (MAIN SEO BOOST) */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            name: "YouTube Thumbnail Downloader",
+            applicationCategory: "WebApplication",
+            operatingSystem: "All",
+            url: "https://yttoolspro.vercel.app/tools/youtube-thumbnail",
+            description:
+              "Free YouTube Thumbnail Downloader to get HD/4K thumbnail image URLs for videos and Shorts.",
+            offers: {
+              "@type": "Offer",
+              price: "0",
+              priceCurrency: "USD",
+            },
+          }),
+        }}
+      />
 
       {/* ✅ FAQ Schema */}
       <script

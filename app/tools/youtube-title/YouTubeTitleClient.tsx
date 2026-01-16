@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 type Lang = "en" | "hi";
 type Style = "viral" | "seo" | "emotional" | "question" | "list";
@@ -143,130 +143,203 @@ function makeTitles(topic: string, lang: Lang, style: Style) {
   return Array.from(new Set(list)).slice(0, 10);
 }
 
-function Toast({
-  show,
-  message,
-  onClose,
-}: {
-  show: boolean;
-  message: string;
-  onClose: () => void;
-}) {
-  useEffect(() => {
-    if (!show) return;
-    const t = setTimeout(onClose, 1400);
-    return () => clearTimeout(t);
-  }, [show, onClose]);
-
-  if (!show) return null;
-
-  return (
-    <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2">
-      <div className="rounded-2xl border border-slate-700 bg-slate-950/90 px-4 py-3 text-sm text-slate-100 shadow-lg">
-        {message}
-      </div>
-    </div>
-  );
+function cx(...classes: Array<string | false | undefined | null>) {
+  return classes.filter(Boolean).join(" ");
 }
 
 export default function YouTubeTitleClient() {
   const [topic, setTopic] = useState("");
   const [lang, setLang] = useState<Lang>("hi");
   const [style, setStyle] = useState<Style>("viral");
-  const [toast, setToast] = useState<{ show: boolean; msg: string }>({
-    show: false,
-    msg: "",
-  });
+
+  const [toast, setToast] = useState<string>("");
+  const [copiedKey, setCopiedKey] = useState<string>("");
+  const [copyAllState, setCopyAllState] = useState<"idle" | "copying" | "done">("idle");
 
   const titles = useMemo(() => makeTitles(topic, lang, style), [topic, lang, style]);
 
-  async function copy(text: string, msg = "Copied ✅") {
-    if (!text) return;
-    await navigator.clipboard.writeText(text);
-    setToast({ show: true, msg });
+  function showToast(msg: string) {
+    setToast(msg);
+    window.clearTimeout((showToast as any)._t);
+    (showToast as any)._t = window.setTimeout(() => setToast(""), 1600);
   }
 
+  async function copy(text: string, key?: string) {
+    if (!text) return;
+    try {
+      await navigator.clipboard.writeText(text);
+      if (key) {
+        setCopiedKey(key);
+        window.setTimeout(() => setCopiedKey(""), 900);
+      }
+      showToast("Copied ✅");
+    } catch {
+      showToast("Copy failed ❌");
+    }
+  }
+
+  async function copyAll() {
+    if (titles.length === 0) return;
+    setCopyAllState("copying");
+    try {
+      await navigator.clipboard.writeText(titles.join("\n"));
+      setCopyAllState("done");
+      showToast(`Copied ${titles.length} titles ✅`);
+      window.setTimeout(() => setCopyAllState("idle"), 900);
+    } catch {
+      setCopyAllState("idle");
+      showToast("Copy failed ❌");
+    }
+  }
+
+  const inputBase =
+    "mt-2 w-full rounded-2xl border border-slate-800 bg-slate-950/40 px-4 py-3 text-slate-100 placeholder:text-slate-400 outline-none transition focus:border-slate-600 focus:ring-2 focus:ring-slate-500/30";
+  const labelBase = "text-sm font-semibold text-slate-200";
+  const helperBase = "mt-2 text-xs text-slate-400";
+
   return (
-    <>
-      <section className="mt-6 rounded-3xl border border-slate-800 bg-slate-900/30 p-5">
-        <div className="grid gap-4 md:grid-cols-3">
-          <div className="md:col-span-1">
-            <div className="text-sm font-semibold text-slate-200">Topic</div>
-            <input
-              value={topic}
-              onChange={(e) => setTopic(e.target.value)}
-              placeholder='Example: "Galwan song", "हनुमान चालीसा", "Fitness tips"'
-              className="mt-2 w-full rounded-2xl border border-slate-800 bg-slate-950/40 px-4 py-3 text-slate-100 placeholder:text-slate-500 outline-none focus:border-slate-600"
-            />
-            <div className="mt-2 text-xs text-slate-400">Tip: 2–5 words best.</div>
-          </div>
+    <section className="relative mt-6 overflow-hidden rounded-3xl border border-slate-800 bg-slate-900/30 p-5 sm:p-6">
+      {/* soft glow */}
+      <div className="pointer-events-none absolute -top-20 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-slate-400/10 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-28 right-0 h-72 w-72 rounded-full bg-indigo-500/10 blur-3xl" />
 
-          <div>
-            <div className="text-sm font-semibold text-slate-200">Language</div>
-            <select
-              value={lang}
-              onChange={(e) => setLang(e.target.value as Lang)}
-              className="mt-2 w-full rounded-2xl border border-slate-800 bg-slate-950/40 px-4 py-3 text-slate-100 outline-none focus:border-slate-600"
-            >
-              <option value="hi">Hindi</option>
-              <option value="en">English</option>
-            </select>
-          </div>
+      {/* toast */}
+      <div
+        className={cx(
+          "pointer-events-none absolute right-4 top-4 z-10 rounded-2xl border border-slate-800 bg-slate-950/70 px-3 py-2 text-xs text-slate-200 shadow-lg backdrop-blur transition",
+          toast ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-1"
+        )}
+        aria-live="polite"
+      >
+        {toast}
+      </div>
 
-          <div>
-            <div className="text-sm font-semibold text-slate-200">Style</div>
-            <select
-              value={style}
-              onChange={(e) => setStyle(e.target.value as Style)}
-              className="mt-2 w-full rounded-2xl border border-slate-800 bg-slate-950/40 px-4 py-3 text-slate-100 outline-none focus:border-slate-600"
-            >
-              <option value="viral">Viral</option>
-              <option value="seo">SEO</option>
-              <option value="emotional">Emotional</option>
-              <option value="question">Question</option>
-              <option value="list">List</option>
-            </select>
-          </div>
+      <div className="flex flex-col gap-1">
+        <div className="text-sm font-semibold text-slate-100">Generate Better Titles</div>
+        <div className="text-sm text-slate-400">
+          Topic डालो → language + style चुनो → 1-click copy.
+        </div>
+      </div>
+
+      <div className="mt-5 grid gap-4 md:grid-cols-3">
+        {/* Topic */}
+        <div className="md:col-span-1">
+          <div className={labelBase}>Topic</div>
+          <input
+            value={topic}
+            onChange={(e) => setTopic(e.target.value)}
+            placeholder='Example: "Fitness tips", "Motivation", "हनुमान चालीसा"'
+            className={inputBase}
+          />
+          <div className={helperBase}>Tip: 2–5 words best. (Short topic = better titles)</div>
         </div>
 
-        <div className="mt-6 rounded-2xl border border-slate-800 bg-slate-950/30 p-4">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <div className="text-sm text-slate-400">Generated titles (click any to copy)</div>
+        {/* Language */}
+        <div>
+          <div className={labelBase}>Language</div>
+          <select
+            value={lang}
+            onChange={(e) => setLang(e.target.value as Lang)}
+            className={inputBase}
+          >
+            <option value="hi">Hindi</option>
+            <option value="en">English</option>
+          </select>
+          <div className={helperBase}>Hindi + English supported.</div>
+        </div>
 
-            <button
-              onClick={() => copy(titles.join("\n"), "Copied all titles ✅")}
-              className="rounded-xl bg-white px-4 py-2 text-sm font-semibold text-slate-950 disabled:opacity-50 active:scale-[0.98]"
-              disabled={titles.length === 0}
-            >
-              Copy All
-            </button>
+        {/* Style */}
+        <div>
+          <div className={labelBase}>Style</div>
+          <select
+            value={style}
+            onChange={(e) => setStyle(e.target.value as Style)}
+            className={inputBase}
+          >
+            <option value="viral">Viral</option>
+            <option value="seo">SEO</option>
+            <option value="emotional">Emotional</option>
+            <option value="question">Question</option>
+            <option value="list">List</option>
+          </select>
+          <div className={helperBase}>Viral for clicks, SEO for search.</div>
+        </div>
+      </div>
+
+      {/* Results */}
+      <div className="mt-6 rounded-3xl border border-slate-800 bg-slate-950/25 p-4 sm:p-5">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <div className="text-sm font-semibold text-slate-200">Generated Titles</div>
+            <div className="text-xs text-slate-400">Click any card to copy instantly.</div>
           </div>
 
-          {titles.length === 0 ? (
-            <div className="mt-4 text-sm text-slate-400">Enter a topic to generate titles.</div>
-          ) : (
-            <div className="mt-4 grid gap-2 sm:grid-cols-2">
-              {titles.map((t) => (
+          <button
+            onClick={copyAll}
+            disabled={titles.length === 0 || copyAllState === "copying"}
+            className={cx(
+              "inline-flex items-center justify-center rounded-2xl px-4 py-2 text-sm font-semibold transition",
+              "border border-slate-700/60 bg-gradient-to-b from-slate-200/15 to-slate-950/30 text-slate-100",
+              "hover:from-slate-200/20 hover:to-slate-950/40 hover:border-slate-500/60",
+              "focus:outline-none focus:ring-2 focus:ring-slate-500/30",
+              "disabled:opacity-50 disabled:cursor-not-allowed"
+            )}
+          >
+            {copyAllState === "idle" && "Copy All"}
+            {copyAllState === "copying" && "Copying…"}
+            {copyAllState === "done" && "Copied ✅"}
+          </button>
+        </div>
+
+        {titles.length === 0 ? (
+          <div className="mt-4 rounded-2xl border border-dashed border-slate-800 bg-slate-950/20 p-4 text-sm text-slate-400">
+            Enter a topic to generate titles.
+          </div>
+        ) : (
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            {titles.map((t) => {
+              const isCopied = copiedKey === t;
+              return (
                 <button
                   key={t}
-                  onClick={() => copy(t, "Copied title ✅")}
-                  className="rounded-2xl border border-slate-800 bg-slate-950/20 px-4 py-3 text-left text-sm hover:border-slate-600 active:scale-[0.99]"
+                  onClick={() => copy(t, t)}
+                  className={cx(
+                    "group relative overflow-hidden rounded-3xl border bg-slate-950/20 px-4 py-3 text-left transition",
+                    "border-slate-800 hover:border-slate-600/80 hover:bg-slate-950/30",
+                    "focus:outline-none focus:ring-2 focus:ring-slate-500/25"
+                  )}
                   title="Click to copy"
                 >
-                  {t}
-                  <div className="mt-1 text-xs text-slate-500">Click to copy</div>
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
+                  <div className="pointer-events-none absolute -left-16 -top-16 h-40 w-40 rounded-full bg-slate-300/10 blur-2xl transition-opacity opacity-0 group-hover:opacity-100" />
 
-      <Toast
-        show={toast.show}
-        message={toast.msg}
-        onClose={() => setToast({ show: false, msg: "" })}
-      />
-    </>
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="text-sm font-medium text-slate-100">{t}</div>
+                    <div
+                      className={cx(
+                        "shrink-0 rounded-xl border px-2 py-1 text-[11px] transition",
+                        isCopied
+                          ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-200"
+                          : "border-slate-800 bg-slate-950/30 text-slate-400 group-hover:text-slate-300"
+                      )}
+                    >
+                      {isCopied ? "Copied" : "Copy"}
+                    </div>
+                  </div>
+
+                  <div className="mt-1 text-xs text-slate-400">
+                    {isCopied ? "Copied to clipboard ✅" : "Tap to copy (1 click)"}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* Tiny footer hint */}
+      <div className="mt-4 text-xs text-slate-500">
+        Pro tip: SEO style titles ke साथ description + hashtags भी match रखें.
+      </div>
+    </section>
   );
 }

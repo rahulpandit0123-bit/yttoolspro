@@ -1,153 +1,220 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { useMemo, useState } from "react";
 
-function getVideoId(input: string) {
+function getYouTubeId(input: string): string | null {
   try {
-    const s = input.trim();
-    if (!s) return null;
+    const url = new URL(input.trim());
 
-    const u = new URL(/^https?:\/\//i.test(s) ? s : `https://${s}`);
+    // youtu.be/VIDEO_ID
+    if (url.hostname.includes("youtu.be")) {
+      const id = url.pathname.replace("/", "").trim();
+      return id || null;
+    }
 
-    if (u.hostname.includes("youtu.be")) return u.pathname.replace("/", "") || null;
-
-    const v = u.searchParams.get("v");
+    // youtube.com/watch?v=VIDEO_ID
+    const v = url.searchParams.get("v");
     if (v) return v;
 
-    const parts = u.pathname.split("/").filter(Boolean);
-    const shortsIndex = parts.indexOf("shorts");
-    if (shortsIndex >= 0 && parts[shortsIndex + 1]) return parts[shortsIndex + 1];
+    // youtube.com/shorts/VIDEO_ID
+    const shortsMatch = url.pathname.match(/\/shorts\/([^/?]+)/);
+    if (shortsMatch?.[1]) return shortsMatch[1];
+
+    // youtube.com/embed/VIDEO_ID
+    const embedMatch = url.pathname.match(/\/embed\/([^/?]+)/);
+    if (embedMatch?.[1]) return embedMatch[1];
 
     return null;
   } catch {
+    // If user pastes just an ID
+    const raw = input.trim();
+    if (/^[a-zA-Z0-9_-]{6,}$/.test(raw)) return raw;
     return null;
   }
 }
 
-function Toast({
-  show,
-  message,
-  onClose,
-}: {
-  show: boolean;
-  message: string;
-  onClose: () => void;
-}) {
-  useEffect(() => {
-    if (!show) return;
-    const t = setTimeout(onClose, 1400);
-    return () => clearTimeout(t);
-  }, [show, onClose]);
+function parseStartToSeconds(s: string): number | null {
+  const raw = s.trim();
+  if (!raw) return null;
 
-  if (!show) return null;
+  // pure seconds: "90"
+  if (/^\d+$/.test(raw)) return Math.max(0, parseInt(raw, 10));
 
-  return (
-    <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2">
-      <div className="rounded-2xl border border-slate-700 bg-slate-950/90 px-4 py-3 text-sm text-slate-100 shadow-lg">
-        {message}
-      </div>
-    </div>
-  );
+  // mm:ss or hh:mm:ss
+  const parts = raw.split(":").map((p) => p.trim());
+  if (parts.some((p) => !/^\d+$/.test(p))) return null;
+
+  const nums = parts.map((p) => parseInt(p, 10));
+  if (nums.length === 2) {
+    const [mm, ss] = nums;
+    return Math.max(0, mm * 60 + ss);
+  }
+  if (nums.length === 3) {
+    const [hh, mm, ss] = nums;
+    return Math.max(0, hh * 3600 + mm * 60 + ss);
+  }
+  return null;
 }
 
 export default function YouTubeEmbedClient() {
   const [url, setUrl] = useState("");
   const [start, setStart] = useState("");
-  const [toast, setToast] = useState<{ show: boolean; msg: string }>({
-    show: false,
-    msg: "",
-  });
+  const [useNoCookie, setUseNoCookie] = useState(true);
 
-  const videoId = useMemo(() => getVideoId(url), [url]);
-
-  const startSeconds = useMemo(() => {
-    if (!start) return 0;
-    const parts = start.split(":").map(Number);
-    if (parts.some((n) => Number.isNaN(n))) return 0;
-    return parts.length === 2 ? parts[0] * 60 + parts[1] : parts[0];
-  }, [start]);
+  const videoId = useMemo(() => getYouTubeId(url), [url]);
+  const startSeconds = useMemo(() => parseStartToSeconds(start), [start]);
 
   const embedSrc = useMemo(() => {
     if (!videoId) return "";
-    return `https://www.youtube-nocookie.com/embed/${videoId}${
-      startSeconds ? `?start=${startSeconds}` : ""
-    }`;
-  }, [videoId, startSeconds]);
+    const host = useNoCookie ? "www.youtube-nocookie.com" : "www.youtube.com";
+    const base = `https://${host}/embed/${videoId}`;
+    if (startSeconds && startSeconds > 0) return `${base}?start=${startSeconds}`;
+    return base;
+  }, [videoId, useNoCookie, startSeconds]);
 
   const embedCode = useMemo(() => {
-    if (!videoId) return "";
-    return `<iframe width="560" height="315"
-src="${embedSrc}"
-title="YouTube video player"
-frameborder="0"
-allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-allowfullscreen></iframe>`;
-  }, [videoId, embedSrc]);
+    if (!embedSrc) return "";
+    return `<div style="position:relative;padding-top:56.25%;width:100%;">
+  <iframe
+    src="${embedSrc}"
+    title="YouTube video player"
+    style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    allowfullscreen
+  ></iframe>
+</div>`;
+  }, [embedSrc]);
 
-  async function copy() {
-    await navigator.clipboard.writeText(embedCode);
-    setToast({ show: true, msg: "Copied embed code ✅" });
-  }
+  const copy = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      alert("Copied!");
+    } catch {
+      alert("Copy failed. Please copy manually.");
+    }
+  };
+
+  // NOTE: TOOL_LINKS kept if you need it later (not rendered now)
+  const TOOL_LINKS = [
+    { href: "/tools/youtube-thumbnail", label: "Thumbnail Downloader" },
+    { href: "/tools/youtube-timestamp", label: "Timestamp Link" },
+    { href: "/tools/youtube-hashtag", label: "Hashtag Generator" },
+    { href: "/tools/youtube-title", label: "Title Generator" },
+  ];
 
   return (
-    <>
-      <div className="mt-6 rounded-3xl border border-slate-800 bg-slate-900/40 p-5 grid gap-4 md:grid-cols-2">
-        <input
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          placeholder="Paste YouTube video URL"
-          className="rounded-2xl border border-slate-800 bg-slate-950/40 px-4 py-3 text-slate-100 placeholder:text-slate-500 outline-none focus:border-slate-600"
-        />
-
-        <input
-          value={start}
-          onChange={(e) => setStart(e.target.value)}
-          placeholder="Start time (mm:ss) optional"
-          className="rounded-2xl border border-slate-800 bg-slate-950/40 px-4 py-3 text-slate-100 placeholder:text-slate-500 outline-none focus:border-slate-600"
-        />
+    <div className="mx-auto max-w-6xl px-4 pb-16 pt-8">
+      {/* Title */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold tracking-tight md:text-4xl">
+          <span className="bg-gradient-to-r from-fuchsia-200 via-slate-50 to-cyan-200 bg-clip-text text-transparent">
+            YouTube Embed Code Generator
+          </span>
+        </h1>
+        <p className="mt-2 max-w-2xl text-sm text-slate-300 md:text-base">
+          Generate a clean, responsive YouTube embed code (privacy-friendly optional) with optional start time.
+        </p>
       </div>
 
-      {!videoId && url.trim().length > 0 && (
-        <div className="mt-3 text-sm text-rose-300">
-          Invalid YouTube URL. Please paste a valid link.
-        </div>
-      )}
-
-      {videoId && (
-        <div className="mt-8 grid gap-6 md:grid-cols-2">
-          <div className="rounded-3xl border border-slate-800 bg-slate-900/30 p-4">
-            <div className="font-semibold mb-2">Embed Preview</div>
-            <div className="aspect-video overflow-hidden rounded-2xl border border-slate-800 bg-black">
-              <iframe className="h-full w-full" src={embedSrc} allowFullScreen title="YouTube embed preview" />
+      {/* Main grid */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        {/* Left: Inputs */}
+        <div className="rounded-3xl border border-slate-800 bg-slate-900/25 p-5 shadow-[0_0_0_1px_rgba(15,23,42,0.2)] backdrop-blur">
+          <div className="space-y-4">
+            <div>
+              <label className="text-sm font-medium text-slate-200">YouTube URL</label>
+              <input
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+                placeholder="Paste YouTube video / Shorts URL"
+                className="mt-2 w-full rounded-2xl border border-slate-800 bg-slate-950/40 px-4 py-3 text-slate-100 placeholder:text-slate-500 outline-none focus:border-cyan-400/40 focus:ring-2 focus:ring-cyan-500/30"
+              />
             </div>
-            <div className="mt-2 break-all text-xs text-slate-400">{embedSrc}</div>
-          </div>
 
-          <div className="rounded-3xl border border-slate-800 bg-slate-900/30 p-4">
-            <div className="flex items-center justify-between mb-2">
-              <div className="font-semibold">Embed Code</div>
+            <div>
+              <label className="text-sm font-medium text-slate-200">Start time (optional)</label>
+              <input
+                value={start}
+                onChange={(e) => setStart(e.target.value)}
+                placeholder="mm:ss (example 1:23) or seconds (90)"
+                className="mt-2 w-full rounded-2xl border border-slate-800 bg-slate-950/40 px-4 py-3 text-slate-100 placeholder:text-slate-500 outline-none focus:border-cyan-400/40 focus:ring-2 focus:ring-cyan-500/30"
+              />
+              <p className="mt-2 text-xs text-slate-400">Tip: “1:23” means 1 minute 23 seconds.</p>
+            </div>
+
+            <label className="flex items-center gap-3 rounded-2xl border border-slate-800 bg-slate-950/30 px-4 py-3 text-sm text-slate-200">
+              <input
+                type="checkbox"
+                checked={useNoCookie}
+                onChange={(e) => setUseNoCookie(e.target.checked)}
+                className="h-4 w-4 accent-cyan-400"
+              />
+              Use privacy-friendly domain (youtube-nocookie)
+            </label>
+
+            <div className="flex flex-wrap gap-3">
               <button
-                onClick={copy}
-                className="rounded-xl bg-white px-3 py-2 text-sm font-semibold text-slate-950 active:scale-[0.98]"
+                onClick={() => copy(embedCode)}
+                disabled={!embedCode}
+                className="rounded-2xl bg-white px-5 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40"
               >
-                Copy Code
+                Copy embed code
+              </button>
+
+              <button
+                onClick={() => copy(embedSrc)}
+                disabled={!embedSrc}
+                className="rounded-2xl border border-slate-700 bg-slate-950/30 px-5 py-3 text-sm font-semibold text-slate-100 hover:bg-slate-900/40 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                Copy embed URL
               </button>
             </div>
 
+            {!url.trim() ? (
+              <div className="rounded-2xl border border-slate-800 bg-slate-950/20 p-4 text-sm text-slate-300">
+                Paste a YouTube link above. We’ll auto-detect the video ID.
+              </div>
+            ) : !videoId ? (
+              <div className="rounded-2xl border border-rose-500/30 bg-rose-500/10 p-4 text-sm text-rose-200">
+                This doesn’t look like a valid YouTube URL / ID. Please paste a correct link.
+              </div>
+            ) : null}
+          </div>
+        </div>
+
+        {/* Right: Preview + Code */}
+        <div className="rounded-3xl border border-slate-800 bg-slate-900/25 p-5 backdrop-blur">
+          <div>
+            <div className="mb-2 text-sm font-semibold text-slate-200">Preview</div>
+            <div className="aspect-video overflow-hidden rounded-2xl border border-slate-800 bg-slate-950/40">
+              {embedSrc ? (
+                <iframe
+                  className="h-full w-full"
+                  src={embedSrc}
+                  title="YouTube Preview"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center text-sm text-slate-400">
+                  Paste a valid YouTube URL to see preview
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="mt-5">
+            <div className="mb-2 text-sm font-semibold text-slate-200">Embed code</div>
             <textarea
-              readOnly
               value={embedCode}
-              className="w-full h-48 rounded-2xl border border-slate-800 bg-slate-950/40 p-3 text-xs text-slate-200"
+              readOnly
+              placeholder="Your embed code will appear here…"
+              className="h-40 w-full resize-none rounded-2xl border border-slate-800 bg-slate-950/40 px-4 py-3 font-mono text-xs text-slate-100 placeholder:text-slate-500 outline-none"
             />
           </div>
         </div>
-      )}
-
-      <Toast
-        show={toast.show}
-        message={toast.msg}
-        onClose={() => setToast({ show: false, msg: "" })}
-      />
-    </>
+      </div>
+    </div>
   );
 }

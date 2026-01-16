@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 function getVideoId(input: string) {
   try {
@@ -28,38 +28,8 @@ function getVideoId(input: string) {
   }
 }
 
-function Toast({
-  show,
-  message,
-  onClose,
-}: {
-  show: boolean;
-  message: string;
-  onClose: () => void;
-}) {
-  useEffect(() => {
-    if (!show) return;
-    const t = setTimeout(onClose, 1400);
-    return () => clearTimeout(t);
-  }, [show, onClose]);
-
-  if (!show) return null;
-
-  return (
-    <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2">
-      <div className="rounded-2xl border border-slate-700 bg-slate-950/90 px-4 py-3 text-sm text-slate-100 shadow-lg">
-        {message}
-      </div>
-    </div>
-  );
-}
-
 export default function YouTubeThumbnailClient() {
   const [url, setUrl] = useState("");
-  const [toast, setToast] = useState<{ show: boolean; msg: string }>({
-    show: false,
-    msg: "",
-  });
 
   const videoId = useMemo(() => getVideoId(url), [url]);
 
@@ -75,7 +45,7 @@ export default function YouTubeThumbnailClient() {
 
   async function copy(text: string) {
     await navigator.clipboard.writeText(text);
-    setToast({ show: true, msg: "Copied thumbnail URL ✅" });
+    alert("Thumbnail URL copied!");
   }
 
   return (
@@ -85,7 +55,7 @@ export default function YouTubeThumbnailClient() {
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           placeholder="Paste YouTube video URL"
-          className="w-full rounded-2xl border border-slate-800 bg-slate-950/40 px-4 py-3 text-slate-100 placeholder:text-slate-500 outline-none focus:border-slate-600"
+          className="w-full rounded-2xl border border-slate-800 bg-slate-950/40 px-4 py-3 text-slate-100 placeholder:text-slate-300 outline-none focus:border-slate-600"
         />
 
         {!videoId && url.trim().length > 0 && (
@@ -107,7 +77,7 @@ export default function YouTubeThumbnailClient() {
                 <div className="flex gap-2">
                   <button
                     onClick={() => copy(t.src)}
-                    className="rounded-xl bg-white px-3 py-2 text-sm font-semibold text-slate-950 active:scale-[0.98]"
+                    className="rounded-xl bg-white px-3 py-2 text-sm font-semibold text-slate-100"
                   >
                     Copy URL
                   </button>
@@ -115,7 +85,7 @@ export default function YouTubeThumbnailClient() {
                     href={t.src}
                     target="_blank"
                     rel="noreferrer"
-                    className="rounded-xl border border-slate-700 px-3 py-2 text-sm hover:border-slate-500"
+                    className="rounded-xl border border-slate-700 px-3 py-2 text-sm"
                   >
                     Open
                   </a>
@@ -133,12 +103,6 @@ export default function YouTubeThumbnailClient() {
           ))}
         </div>
       )}
-
-      <Toast
-        show={toast.show}
-        message={toast.msg}
-        onClose={() => setToast({ show: false, msg: "" })}
-      />
     </>
   );
 }
