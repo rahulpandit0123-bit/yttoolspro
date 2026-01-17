@@ -6,11 +6,13 @@ const TITLE = "YouTube Title Generator (FREE) ⚡ Viral + SEO Titles – YTTools
 const DESC =
   "Generate catchy YouTube titles in Hindi + English with Viral and SEO styles. Free YouTube title generator for creators and Shorts.";
 
+const URL = "https://yttoolspro.vercel.app/tools/youtube-title";
+
 export const metadata: Metadata = {
   title: TITLE,
   description: DESC,
   alternates: {
-    canonical: "https://yttoolspro.vercel.app/tools/youtube-title",
+    canonical: URL,
   },
   robots: {
     index: true,
@@ -28,7 +30,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: TITLE,
     description: DESC,
-    url: "https://yttoolspro.vercel.app/tools/youtube-title",
+    url: URL,
     siteName: "YTToolsPro",
     type: "website",
   },
@@ -40,6 +42,122 @@ export const metadata: Metadata = {
 };
 
 export default function YouTubeTitlePage() {
+  const webAppSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: "YouTube Title Generator",
+    applicationCategory: "UtilityApplication",
+    operatingSystem: "All",
+    url: URL,
+    description:
+      "Free YouTube Title Generator to create viral and SEO optimized titles in Hindi and English.",
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "YTToolsPro",
+      url: "https://yttoolspro.vercel.app",
+      logo: "https://yttoolspro.vercel.app/logo.png",
+    },
+  };
+
+  const howToSchema = {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name: "How to generate YouTube titles using YTToolsPro",
+    description:
+      "Step-by-step guide to generate viral and SEO-friendly YouTube titles in Hindi or English.",
+    totalTime: "PT1M",
+    supply: [],
+    tool: [
+      {
+        "@type": "HowToTool",
+        name: "YTToolsPro YouTube Title Generator",
+      },
+    ],
+    step: [
+      {
+        "@type": "HowToStep",
+        name: "Enter your topic",
+        text: "Paste your video topic or keyword into the input box.",
+      },
+      {
+        "@type": "HowToStep",
+        name: "Choose a style",
+        text: "Select Viral, SEO, Emotional, Question, or List style.",
+      },
+      {
+        "@type": "HowToStep",
+        name: "Generate titles",
+        text: "Click generate to get multiple title ideas instantly.",
+      },
+      {
+        "@type": "HowToStep",
+        name: "Copy and use",
+        text: "Copy your favorite title and paste it into YouTube.",
+      },
+    ],
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://yttoolspro.vercel.app/",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Tools",
+        item: "https://yttoolspro.vercel.app/tools",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "YouTube Title Generator",
+        item: URL,
+      },
+    ],
+  };
+
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "Is this YouTube Title Generator free?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes, this YouTube Title Generator is completely free to use.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Can I use these titles for YouTube Shorts?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes. The generated titles work for both YouTube Shorts and normal videos.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Which languages are supported?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "You can generate titles in Hindi and English.",
+        },
+      },
+    ],
+  };
+
   return (
     <main className="mx-auto max-w-6xl px-4 py-10">
       {/* ✅ Breadcrumb */}
@@ -103,63 +221,22 @@ export default function YouTubeTitlePage() {
         </div>
       </section>
 
-      {/* ✅ SOFTWARE TOOL SCHEMA (MAIN SEO BOOST) */}
+      {/* ✅ ADVANCED SCHEMA (WebApplication + HowTo + Breadcrumb + FAQ) */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "SoftwareApplication",
-            name: "YouTube Title Generator",
-            applicationCategory: "WebApplication",
-            operatingSystem: "All",
-            url: "https://yttoolspro.vercel.app/tools/youtube-title",
-            description:
-              "Free YouTube Title Generator to create viral and SEO optimized titles in Hindi and English.",
-            offers: {
-              "@type": "Offer",
-              price: "0",
-              priceCurrency: "USD",
-            },
-          }),
-        }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(webAppSchema) }}
       />
-
-      {/* ✅ FAQ SCHEMA */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "FAQPage",
-            mainEntity: [
-              {
-                "@type": "Question",
-                name: "Is this YouTube Title Generator free?",
-                acceptedAnswer: {
-                  "@type": "Answer",
-                  text: "Yes, this YouTube Title Generator is completely free to use.",
-                },
-              },
-              {
-                "@type": "Question",
-                name: "Can I use these titles for YouTube Shorts?",
-                acceptedAnswer: {
-                  "@type": "Answer",
-                  text: "Yes. The generated titles work for both YouTube Shorts and normal videos.",
-                },
-              },
-              {
-                "@type": "Question",
-                name: "Which languages are supported?",
-                acceptedAnswer: {
-                  "@type": "Answer",
-                  text: "You can generate titles in Hindi and English.",
-                },
-              },
-            ],
-          }),
-        }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
     </main>
   );

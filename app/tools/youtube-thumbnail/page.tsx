@@ -6,11 +6,13 @@ const TITLE = "YouTube Thumbnail Downloader (HD/4K) 📸 Free Tool – YTToolsPr
 const DESC =
   "Download YouTube thumbnails in HD, HQ & 4K quality. Free YouTube thumbnail downloader tool for creators (Videos + Shorts).";
 
+const URL = "https://yttoolspro.vercel.app/tools/youtube-thumbnail";
+
 export const metadata: Metadata = {
   title: TITLE,
   description: DESC,
   alternates: {
-    canonical: "https://yttoolspro.vercel.app/tools/youtube-thumbnail",
+    canonical: URL,
   },
   robots: {
     index: true,
@@ -28,7 +30,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: TITLE,
     description: DESC,
-    url: "https://yttoolspro.vercel.app/tools/youtube-thumbnail",
+    url: URL,
     siteName: "YTToolsPro",
     type: "website",
   },
@@ -40,6 +42,7 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
+  /* ---------- Existing FAQ schema kept ---------- */
   const faq = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -67,6 +70,91 @@ export default function Page() {
           "@type": "Answer",
           text: "No. This tool only provides publicly available thumbnail image URLs. It does not download videos.",
         },
+      },
+    ],
+  };
+
+  /* ---------- Advanced schemas added ---------- */
+  const webAppSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: "YouTube Thumbnail Downloader",
+    applicationCategory: "UtilityApplication",
+    operatingSystem: "All",
+    url: URL,
+    description:
+      "Free YouTube Thumbnail Downloader to get HD/4K thumbnail image URLs for videos and Shorts.",
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "YTToolsPro",
+      url: "https://yttoolspro.vercel.app",
+      logo: "https://yttoolspro.vercel.app/logo.png",
+    },
+  };
+
+  const howToSchema = {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name: "How to download a YouTube thumbnail in HD/4K",
+    description:
+      "Step-by-step guide to get YouTube thumbnail image URLs (HD/4K) using YTToolsPro.",
+    totalTime: "PT1M",
+    tool: [
+      {
+        "@type": "HowToTool",
+        name: "YTToolsPro YouTube Thumbnail Downloader",
+      },
+    ],
+    step: [
+      {
+        "@type": "HowToStep",
+        name: "Copy YouTube link",
+        text: "Copy the YouTube video or Shorts link (watch URL, Shorts URL, or youtu.be).",
+      },
+      {
+        "@type": "HowToStep",
+        name: "Paste link",
+        text: "Paste the link into the input box on this page.",
+      },
+      {
+        "@type": "HowToStep",
+        name: "Get thumbnails",
+        text: "Click to fetch thumbnails in multiple sizes including HD/4K when available.",
+      },
+      {
+        "@type": "HowToStep",
+        name: "Download or copy URL",
+        text: "Download the thumbnail image or copy the image URL with one click.",
+      },
+    ],
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://yttoolspro.vercel.app/",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Tools",
+        item: "https://yttoolspro.vercel.app/tools",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "YouTube Thumbnail Downloader",
+        item: URL,
       },
     ],
   };
@@ -167,29 +255,19 @@ export default function Page() {
         </div>
       </section>
 
-      {/* ✅ SOFTWARE TOOL SCHEMA (MAIN SEO BOOST) */}
+      {/* ✅ ADVANCED SEO SCHEMA (WebApplication + HowTo + Breadcrumb + FAQ) */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "SoftwareApplication",
-            name: "YouTube Thumbnail Downloader",
-            applicationCategory: "WebApplication",
-            operatingSystem: "All",
-            url: "https://yttoolspro.vercel.app/tools/youtube-thumbnail",
-            description:
-              "Free YouTube Thumbnail Downloader to get HD/4K thumbnail image URLs for videos and Shorts.",
-            offers: {
-              "@type": "Offer",
-              price: "0",
-              priceCurrency: "USD",
-            },
-          }),
-        }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(webAppSchema) }}
       />
-
-      {/* ✅ FAQ Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faq) }}

@@ -6,11 +6,13 @@ const TITLE = "YouTube Hashtag Generator (Shorts + Videos) – YTToolsPro";
 const DESC =
   "Generate YouTube hashtags for Shorts and videos instantly. Paste a topic/keyword and get optimized hashtags. Free tool for creators in Hindi + English.";
 
+const URL = "https://yttoolspro.vercel.app/tools/youtube-hashtag";
+
 export const metadata: Metadata = {
   title: TITLE,
   description: DESC,
   alternates: {
-    canonical: "https://yttoolspro.vercel.app/tools/youtube-hashtag",
+    canonical: URL,
   },
   robots: {
     index: true,
@@ -28,7 +30,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: TITLE,
     description: DESC,
-    url: "https://yttoolspro.vercel.app/tools/youtube-hashtag",
+    url: URL,
     siteName: "YTToolsPro",
     type: "website",
   },
@@ -40,7 +42,8 @@ export const metadata: Metadata = {
 };
 
 export default function YouTubeHashtagPage() {
-  const faq = {
+  /* ---------------- FAQ (keep) ---------------- */
+  const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     mainEntity: [
@@ -67,6 +70,91 @@ export default function YouTubeHashtagPage() {
           "@type": "Answer",
           text: "Yes. The generated hashtags can be used for Shorts and normal videos.",
         },
+      },
+    ],
+  };
+
+  /* ------------- Advanced schemas ------------- */
+  const webAppSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: "YouTube Hashtag Generator",
+    applicationCategory: "UtilityApplication",
+    operatingSystem: "All",
+    url: URL,
+    description:
+      "Free YouTube Hashtag Generator for Shorts and videos. Create optimized hashtags in Hindi and English.",
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "YTToolsPro",
+      url: "https://yttoolspro.vercel.app",
+      logo: "https://yttoolspro.vercel.app/logo.png",
+    },
+  };
+
+  const howToSchema = {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name: "How to generate YouTube hashtags for Shorts and videos",
+    description:
+      "Step-by-step guide to generate YouTube hashtags using YTToolsPro in Hindi or English.",
+    totalTime: "PT1M",
+    tool: [
+      {
+        "@type": "HowToTool",
+        name: "YTToolsPro YouTube Hashtag Generator",
+      },
+    ],
+    step: [
+      {
+        "@type": "HowToStep",
+        name: "Enter your topic",
+        text: "Type your video topic/keyword (Hindi or English) in the input box.",
+      },
+      {
+        "@type": "HowToStep",
+        name: "Generate hashtags",
+        text: "Click generate to get optimized hashtags for YouTube Shorts and videos.",
+      },
+      {
+        "@type": "HowToStep",
+        name: "Copy hashtags",
+        text: "Copy all hashtags with one click and paste into YouTube title/description.",
+      },
+      {
+        "@type": "HowToStep",
+        name: "Use best set",
+        text: "Use 3–15 relevant hashtags for best results and avoid spammy tags.",
+      },
+    ],
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://yttoolspro.vercel.app/",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Tools",
+        item: "https://yttoolspro.vercel.app/tools",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "YouTube Hashtag Generator",
+        item: URL,
       },
     ],
   };
@@ -128,10 +216,22 @@ export default function YouTubeHashtagPage() {
         </div>
       </section>
 
-      {/* ✅ FAQ Schema for SEO */}
+      {/* ✅ ADVANCED SCHEMA */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faq) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(webAppSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
     </main>
   );
